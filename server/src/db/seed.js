@@ -1,6 +1,6 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(process.cwd(), '.env') });
-const { getPool, sql } = require('./pool');
+const { getPool } = require('./pool');
 
 async function seedProjects(pool) {
   const projects = [
@@ -25,27 +25,16 @@ async function seedProjects(pool) {
   ];
 
   for (const p of projects) {
-    const request = pool.request();
-    request.input('title', sql.NVarChar(255), p.title);
-    request.input('description', sql.NVarChar(sql.MAX), p.description);
-    request.input('imageURL', sql.NVarChar(1024), p.imageURL);
-    request.input('link', sql.NVarChar(1024), p.link);
     // Proper upsert: update if exists, else insert
-    await request.query(`
-      IF EXISTS (SELECT 1 FROM Projects WHERE title = @title)
-      BEGIN
-        UPDATE Projects
-        SET description = @description,
-            imageURL = @imageURL,
-            link = @link
-        WHERE title = @title;
-      END
-      ELSE
-      BEGIN
-        INSERT INTO Projects (title, description, imageURL, link)
-        VALUES (@title, @description, @imageURL, @link);
-      END
-    `);
+    await pool.query(`
+      INSERT INTO Projects (title, description, imageURL, link)
+      VALUES ($1, $2, $3, $4)
+      ON CONFLICT (title) 
+      DO UPDATE SET 
+        description = EXCLUDED.description,
+        imageURL = EXCLUDED.imageURL,
+        link = EXCLUDED.link
+    `, [p.title, p.description, p.imageURL, p.link]);
   }
 }
 
@@ -57,19 +46,11 @@ async function seedTestimonials(pool) {
   ];
 
   for (const t of testimonials) {
-    const request = pool.request();
-    request.input('clientName', sql.NVarChar(255), t.clientName);
-    request.input('feedback', sql.NVarChar(sql.MAX), t.feedback);
-    request.input('rating', sql.Int, t.rating);
-    await request.query(`
-      IF NOT EXISTS (
-        SELECT 1 FROM Testimonials WHERE clientName = @clientName AND feedback = @feedback
-      )
-      BEGIN
-        INSERT INTO Testimonials (clientName, feedback, rating)
-        VALUES (@clientName, @feedback, @rating)
-      END
-    `);
+    await pool.query(`
+      INSERT INTO Testimonials (clientName, feedback, rating)
+      VALUES ($1, $2, $3)
+      ON CONFLICT DO NOTHING
+    `, [t.clientName, t.feedback, t.rating]);
   }
 }
 
@@ -80,18 +61,12 @@ async function main() {
   const adminPassword = process.env.ADMIN_PASSWORD || 'ChangeMe123!';
   const bcrypt = require('bcrypt');
   const hash = await bcrypt.hash(adminPassword, 10);
-  await pool.request()
-    .input('name', sql.NVarChar(255), 'Administrator')
-    .input('email', sql.NVarChar(255), adminEmail)
-    .input('password', sql.NVarChar(255), hash)
-    .input('role', sql.NVarChar(50), 'admin')
-    .query(`
-      IF NOT EXISTS (SELECT 1 FROM Users WHERE email = @email)
-      BEGIN
-        INSERT INTO Users (name, email, password, role)
-        VALUES (@name, @email, @password, @role)
-      END
-    `);
+  
+  await pool.query(`
+    INSERT INTO Users (name, email, password, role)
+    VALUES ($1, $2, $3, $4)
+    ON CONFLICT (email) DO NOTHING
+  `, ['Administrator', adminEmail, hash, 'admin']);
 
   await seedProjects(pool);
   await seedTestimonials(pool);

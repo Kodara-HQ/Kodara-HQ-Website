@@ -1,44 +1,37 @@
-const sql = require('mssql');
+const { Pool } = require('pg');
 
-let poolPromise;
+let pool;
 
 function buildConfig() {
   return {
-    server: process.env.MSSQL_SERVER || '127.0.0.1',
-    database: process.env.MSSQL_DATABASE || 'Kodara-HQ',
-    user: process.env.MSSQL_USER || 'sa',
-    password: process.env.MSSQL_PASSWORD || 'Lam123...',
-    port: parseInt(process.env.MSSQL_PORT || '1433', 10),
-    options: {
-      encrypt: (process.env.MSSQL_ENCRYPT || 'true') === 'true',
-      trustServerCertificate: (process.env.MSSQL_TRUST_SERVER_CERTIFICATE || 'true') === 'true'
-    },
-    pool: {
-      max: 10,
-      min: 0,
-      idleTimeoutMillis: 30000
-    }
+    host: process.env.POSTGRES_HOST || 'localhost',
+    database: process.env.POSTGRES_DB || 'kodara_hq',
+    user: process.env.POSTGRES_USER || 'postgres',
+    password: process.env.POSTGRES_PASSWORD || 'password',
+    port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
   };
 }
 
 function getPool() {
-  if (!poolPromise) {
-    poolPromise = new sql.ConnectionPool(buildConfig())
-      .connect()
-      .then((pool) => {
-        // eslint-disable-next-line no-console
-        console.log('Connected to MSSQL');
-        return pool;
-      })
-      .catch((err) => {
-        // eslint-disable-next-line no-console
-        console.error('Database Connection Failed! Bad Config: ', err);
-        throw err;
-      });
+  if (!pool) {
+    pool = new Pool(buildConfig());
+    
+    pool.on('connect', () => {
+      console.log('Connected to PostgreSQL');
+    });
+    
+    pool.on('error', (err) => {
+      console.error('Unexpected error on idle client', err);
+      process.exit(-1);
+    });
   }
-  return poolPromise;
+  return pool;
 }
 
-module.exports = { sql, getPool };
+module.exports = { getPool };
 
 

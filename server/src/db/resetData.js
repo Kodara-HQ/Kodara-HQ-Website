@@ -4,15 +4,12 @@ const { getPool } = require('./pool');
 
 async function main() {
   const pool = await getPool();
-  await pool.request().batch(`
-    DELETE FROM dbo.Projects;
-    IF EXISTS (SELECT 1 FROM sys.identity_columns WHERE OBJECT_NAME(object_id) = 'Projects')
-      DBCC CHECKIDENT ('dbo.Projects', RESEED, 0);
-
-    DELETE FROM dbo.Testimonials;
-    IF EXISTS (SELECT 1 FROM sys.identity_columns WHERE OBJECT_NAME(object_id) = 'Testimonials')
-      DBCC CHECKIDENT ('dbo.Testimonials', RESEED, 0);
+  
+  // Clear data and reset sequences in PostgreSQL
+  await pool.query(`
+    TRUNCATE TABLE Projects, Testimonials RESTART IDENTITY CASCADE;
   `);
+  
   // eslint-disable-next-line no-console
   console.log('Projects and Testimonials cleared.');
   process.exit(0);
