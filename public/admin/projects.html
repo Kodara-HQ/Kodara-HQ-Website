@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projects - Kodara Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/image/Kodara logo1.png" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
+      <nav>
+        <a href="/">Public Site</a>
+        <a href="/admin/" class="active">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="auth">
+    <section class="section">
+      <div class="container">
+        <div class="page-header">
+          <h1>📁 Project Management</h1>
+          <p class="subtitle">Create, edit, and manage your portfolio projects</p>
+        </div>
+
+        <div class="admin-grid">
+          <aside class="card" id="sidebar">
+            <h3>🚀 Admin Dashboard</h3>
+            <p class="muted">Welcome to Kodara-HQ Admin</p>
+            <nav class="stack" style="margin-top:10px; display: flex; flex-direction: column; gap: 8px;">
+              <a href="/admin/projects.html" class="btn btn-secondary active" style="text-align: left; justify-content: flex-start;">📁 Projects</a>
+              <a href="/admin/contacts.html" class="btn btn-secondary" style="text-align: left; justify-content: flex-start;">📧 Contacts</a>
+              <a href="/admin/subscriptions.html" class="btn btn-secondary" style="text-align: left; justify-content: flex-start;">📋 Subscriptions</a>
+              <a href="/admin/payments.html" class="btn btn-secondary" style="text-align: left; justify-content: flex-start;">💳 Payments</a>
+            </nav>
+          </aside>
+
+          <section id="content">
+            <div class="card panel">
+              <div class="section-header">
+                <h3>✨ Create New Project</h3>
+                <p class="muted">Add a new project to your portfolio</p>
+              </div>
+              
+              <form id="newProject" class="stack">
+                <div class="form-row">
+                  <label>Project Title<input name="title" required placeholder="Enter project title..." /></label>
+                  <label>Project Link<input name="link" placeholder="https://... or /" /></label>
+                </div>
+                <label>Description<textarea name="description" placeholder="Describe your project, technologies used, and key features..."></textarea></label>
+                <div class="form-row">
+                  <label>Image URL<input name="imageURL" placeholder="/image/example.png or https://..." /></label>
+                  <label>Category<select name="category">
+                    <option value="">Select category...</option>
+                    <option value="web">Web Development</option>
+                    <option value="mobile">Mobile App</option>
+                    <option value="design">UI/UX Design</option>
+                    <option value="software">Software</option>
+                    <option value="other">Other</option>
+                  </select></label>
+                </div>
+                <div class="form-actions">
+                  <button class="btn" type="submit">✨ Add Project</button>
+                  <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear Form</button>
+                </div>
+                <p id="createStatus" class="status"></p>
+              </form>
+
+              <div class="divider"></div>
+
+              <div class="section-header">
+                <h3>📋 All Projects</h3>
+                <div class="table-controls">
+                  <input type="text" id="searchProjects" placeholder="Search projects..." class="search-input" />
+                  <select id="filterCategory" class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="web">Web Development</option>
+                    <option value="mobile">Mobile App</option>
+                    <option value="design">UI/UX Design</option>
+                    <option value="software">Software</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="table-container">
+                <table id="projectsTable" class="table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Category</th>
+                      <th>Link</th>
+                      <th>Image</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="projectsTableBody">
+                    <!-- Projects will be loaded here -->
+                  </tbody>
+                </table>
+                <p id="projectsStatus" class="status"></p>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let projects = [];
+    let filteredProjects = [];
+
+    // DOM elements
+    const newProject = document.getElementById('newProject');
+    const createStatus = document.getElementById('createStatus');
+    const projectsTable = document.getElementById('projectsTable');
+    const projectsTableBody = document.getElementById('projectsTableBody');
+    const projectsStatus = document.getElementById('projectsStatus');
+    const searchInput = document.getElementById('searchProjects');
+    const filterSelect = document.getElementById('filterCategory');
+
+    // Event listeners
+    newProject.addEventListener('submit', handleCreateProject);
+    searchInput.addEventListener('input', filterProjects);
+    filterSelect.addEventListener('change', filterProjects);
+
+    // Load projects on page load
+    loadProjects();
+
+    async function handleCreateProject(e) {
+      e.preventDefault();
+      createStatus.textContent = 'Creating project...';
+      createStatus.className = 'status';
+      
+      try {
+        const data = Object.fromEntries(new FormData(newProject).entries());
+        const res = await fetch('/api/admin/projects', { 
+          method: 'POST', 
+          headers: { 'Content-Type': 'application/json' }, 
+          body: JSON.stringify(data) 
+        });
+        const payload = await res.json();
+        
+        if (!res.ok) throw new Error(payload.error || 'Failed to create project');
+        
+        createStatus.textContent = '✅ Project created successfully!';
+        createStatus.className = 'status success';
+        newProject.reset();
+        
+        // Reload projects
+        await loadProjects();
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          createStatus.textContent = '';
+          createStatus.className = 'status';
+        }, 3000);
+        
+      } catch(err) {
+        createStatus.textContent = `❌ ${err.message}`;
+        createStatus.className = 'status error';
+      }
+    }
+
+    async function loadProjects() {
+      projectsStatus.textContent = 'Loading projects...';
+      projectsStatus.className = 'status';
+      
+      try {
+        const res = await fetch('/api/admin/projects');
+        const items = await res.json();
+        
+        if (!res.ok) throw new Error(items.error || 'Failed to load projects');
+        
+        projects = items;
+        filteredProjects = [...projects];
+        renderProjects();
+        projectsStatus.textContent = '';
+        
+      } catch(err) {
+        projectsStatus.textContent = `❌ ${err.message}`;
+        projectsStatus.className = 'status error';
+      }
+    }
+
+    function renderProjects() {
+      if (filteredProjects.length === 0) {
+        projectsTableBody.innerHTML = '<tr><td colspan="5" class="text-center">No projects found</td></tr>';
+        return;
+      }
+
+      projectsTableBody.innerHTML = filteredProjects.map(p => `
+        <tr>
+          <td><strong>${p.title}</strong></td>
+          <td><span class="category-badge">${p.category || 'Uncategorized'}</span></td>
+          <td>${p.link ? `<a href="${p.link}" target="_blank" class="link-preview">${p.link}</a>` : '-'}</td>
+          <td>${p.imageURL ? `<img src="${p.imageURL}" alt="${p.title}" class="thumbnail" onerror="this.style.display='none'">` : '-'}</td>
+          <td>
+            <button onclick="editProject(${p.id})" class="btn btn-secondary btn-sm">✏️ Edit</button>
+            <button onclick="deleteProject(${p.id})" class="btn del btn-sm">🗑️ Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterProjects() {
+      const searchTerm = searchInput.value.toLowerCase();
+      const categoryFilter = filterSelect.value;
+      
+      filteredProjects = projects.filter(project => {
+        const matchesSearch = project.title.toLowerCase().includes(searchTerm) || 
+                            (project.description && project.description.toLowerCase().includes(searchTerm));
+        const matchesCategory = !categoryFilter || project.category === categoryFilter;
+        
+        return matchesSearch && matchesCategory;
+      });
+      
+      renderProjects();
+    }
+
+    async function deleteProject(id) {
+      if (!confirm('Are you sure you want to delete this project?')) return;
+      
+      try {
+        const res = await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
+        const payload = await res.json();
+        
+        if (!res.ok) throw new Error(payload.error || 'Failed to delete project');
+        
+        // Remove from local arrays
+        projects = projects.filter(p => p.id !== id);
+        filteredProjects = filteredProjects.filter(p => p.id !== id);
+        renderProjects();
+        
+        // Show success message
+        projectsStatus.textContent = '✅ Project deleted successfully!';
+        projectsStatus.className = 'status success';
+        setTimeout(() => {
+          projectsStatus.textContent = '';
+          projectsStatus.className = 'status';
+        }, 3000);
+        
+      } catch(err) {
+        projectsStatus.textContent = `❌ ${err.message}`;
+        projectsStatus.className = 'status error';
+      }
+    }
+
+    function editProject(id) {
+      const project = projects.find(p => p.id === id);
+      if (!project) return;
+      
+      // Populate form with project data
+      document.querySelector('input[name="title"]').value = project.title;
+      document.querySelector('textarea[name="description"]').value = project.description || '';
+      document.querySelector('input[name="imageURL"]').value = project.imageURL || '';
+      document.querySelector('input[name="link"]').value = project.link || '';
+      document.querySelector('select[name="category"]').value = project.category || '';
+      
+      // Change form to update mode
+      const submitBtn = document.querySelector('#newProject button[type="submit"]');
+      submitBtn.textContent = '✏️ Update Project';
+      submitBtn.onclick = () => updateProject(id);
+      
+      // Scroll to form
+      document.querySelector('#newProject').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function updateProject(id) {
+      createStatus.textContent = 'Updating project...';
+      createStatus.className = 'status';
+      
+      try {
+        const data = Object.fromEntries(new FormData(newProject).entries());
+        const res = await fetch(`/api/admin/projects/${id}`, { 
+          method: 'PUT', 
+          headers: { 'Content-Type': 'application/json' }, 
+          body: JSON.stringify(data) 
+        });
+        const payload = await res.json();
+        
+        if (!res.ok) throw new Error(payload.error || 'Failed to update project');
+        
+        createStatus.textContent = '✅ Project updated successfully!';
+        createStatus.className = 'status success';
+        
+        // Reset form and button
+        resetForm();
+        
+        // Reload projects
+        await loadProjects();
+        
+        setTimeout(() => {
+          createStatus.textContent = '';
+          createStatus.className = 'status';
+        }, 3000);
+        
+      } catch(err) {
+        createStatus.textContent = `❌ ${err.message}`;
+        createStatus.className = 'status error';
+      }
+    }
+
+    function resetForm() {
+      newProject.reset();
+      const submitBtn = document.querySelector('#newProject button[type="submit"]');
+      submitBtn.textContent = '✨ Add Project';
+      submitBtn.onclick = handleCreateProject;
+    }
+  </script>
+</body>
+</html>

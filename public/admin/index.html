@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kodara Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    .admin { padding-top: 90px; }
+    .admin .grid { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+    .card table { width: 100%; border-collapse: collapse; }
+    .card th, .card td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #e2e8f0; }
+    .muted { color: #64748b; }
+    .row { display: flex; gap: 10px; }
+  </style>
+  <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/image/Kodara logo1.png" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
+      <nav>
+        <a href="/">Public Site</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="auth">
+    <section class="section">
+      <div class="container admin-grid">
+        <div id="adminApp" style="display:block; grid-column: 1 / -1;">
+          <div class="admin-grid">
+            <aside class="card" id="sidebar">
+              <h3>🚀 Admin Dashboard</h3>
+              <p class="muted" id="whoami">Welcome to Kodara-HQ Admin</p>
+              <nav class="stack" style="margin-top:10px; display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn btn-secondary" data-tab="projects" style="text-align: left; justify-content: flex-start;">📁 Projects</button>
+                <button class="btn btn-secondary" data-tab="contacts" style="text-align: left; justify-content: flex-start;">📧 Contacts</button>
+                <button class="btn btn-secondary" data-tab="subscriptions" style="text-align: left; justify-content: flex-start;">📋 Subscriptions</button>
+                <button class="btn btn-secondary" data-tab="payments" style="text-align: left; justify-content: flex-start;">💳 Payments</button>
+              </nav>
+            </aside>
+
+            <section id="content">
+              <div class="card panel" id="projectsCard">
+                <h3>📁 Project Management</h3>
+                <form id="newProject" class="stack">
+                  <label>Project Title<input name="title" required placeholder="Enter project title..." /></label>
+                  <label>Description<textarea name="description" placeholder="Describe your project..."></textarea></label>
+                  <label>Image URL<input name="imageURL" placeholder="/image/example.png or https://..." /></label>
+                  <label>Project Link<input name="link" placeholder="https://... or /" /></label>
+                  <button class="btn" type="submit">✨ Add Project</button>
+                  <p id="createStatus" class="status"></p>
+                </form>
+                <div class="divider"></div>
+                <table id="projectsTable" class="table"></table>
+                <p id="projectsStatus" class="status"></p>
+              </div>
+
+              <div class="card panel" id="contactsCard" style="display:none">
+                <h3>📧 Contact Messages</h3>
+                <table id="contactsTable" class="table"></table>
+                <p id="contactsStatus" class="status"></p>
+              </div>
+
+              <div class="card panel" id="subscriptionsCard" style="display:none">
+                <h3>📋 Email Subscriptions</h3>
+                <table id="subscriptionsTable" class="table"></table>
+                <p id="subscriptionsStatus" class="status"></p>
+              </div>
+
+              <div class="card panel" id="paymentsCard" style="display:none">
+                <h3>💳 Payment Records</h3>
+                <table id="paymentsTable" class="table"></table>
+                <p id="paymentsStatus" class="status"></p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let token = '';
+    const whoami = document.getElementById('whoami');
+    const adminApp = document.getElementById('adminApp');
+
+    const projectsTable = document.getElementById('projectsTable');
+    const projectsStatus = document.getElementById('projectsStatus');
+    const newProject = document.getElementById('newProject');
+    const createStatus = document.getElementById('createStatus');
+
+    const contactsTable = document.getElementById('contactsTable');
+    const contactsStatus = document.getElementById('contactsStatus');
+    const subscriptionsTable = document.getElementById('subscriptionsTable');
+    const subscriptionsStatus = document.getElementById('subscriptionsStatus');
+    const paymentsTable = document.getElementById('paymentsTable');
+    const paymentsStatus = document.getElementById('paymentsStatus');
+
+    function showDashboard(){
+      adminApp.style.display = 'block';
+      switchTab('projects');
+    }
+
+    function switchTab(tab){
+      const ids = ['projects','contacts','subscriptions','payments'];
+      ids.forEach(id => {
+        const el = document.getElementById(id + 'Card');
+        if (!el) return;
+        el.style.display = (id === tab) ? 'block' : 'none';
+      });
+      if (tab === 'projects') loadProjects();
+      if (tab === 'contacts') loadContacts();
+      if (tab === 'subscriptions') loadSubscriptions();
+      if (tab === 'payments') loadPayments();
+    }
+
+    document.getElementById('sidebar').addEventListener('click', (e)=>{
+      const btn = e.target.closest('[data-tab]'); if (!btn) return;
+      switchTab(btn.getAttribute('data-tab'));
+    });
+
+    
+
+    async function handleAuthFailureIfNeeded(response){
+      if (response && (response.status === 401 || response.status === 403)) {
+        token = '';
+        // Auth is disabled; show dashboard
+        showDashboard();
+        throw new Error('Unauthorized');
+      }
+    }
+
+    async function loadProjects(){
+      projectsStatus.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/admin/projects');
+        await handleAuthFailureIfNeeded(res);
+        const items = await res.json();
+        if (!res.ok) throw new Error(items.error || 'Failed to load');
+        projectsTable.innerHTML = '<tr><th>Title</th><th>Link</th><th>Image</th><th></th></tr>' +
+          items.map(p => `<tr><td>${p.title}</td><td>${p.link||''}</td><td>${p.imageURL||''}</td><td><button data-id="${p.id}" class="del btn btn-secondary">Delete</button></td></tr>`).join('');
+        projectsStatus.textContent = '';
+      } catch(err){ projectsStatus.textContent = err.message; }
+    }
+
+    if (newProject) {
+      newProject.addEventListener('submit', async (e)=>{
+        e.preventDefault(); createStatus.textContent = 'Creating...';
+        try {
+          const data = Object.fromEntries(new FormData(newProject).entries());
+          const res = await fetch('/api/admin/projects', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+          const payload = await res.json();
+          if (!res.ok) throw new Error(payload.error || 'Failed');
+          newProject.reset(); createStatus.textContent = 'Created';
+          await loadProjects();
+        } catch(err){ createStatus.textContent = err.message; }
+      });
+    }
+
+    projectsTable.addEventListener('click', async (e)=>{
+      const btn = e.target.closest('button.del'); if (!btn) return;
+      const id = btn.getAttribute('data-id'); if (!id) return;
+      btn.disabled = true; btn.textContent = 'Deleting...';
+      try {
+        const res = await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
+        await handleAuthFailureIfNeeded(res);
+        const payload = await res.json(); if (!res.ok) throw new Error(payload.error || 'Failed');
+        await loadProjects();
+      } catch(err){ projectsStatus.textContent = err.message; }
+    });
+
+    async function loadContacts(){
+      contactsStatus.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/admin/contacts');
+        await handleAuthFailureIfNeeded(res);
+        const items = await res.json();
+        if (!res.ok) throw new Error(items.error || 'Failed to load');
+        const header = '<tr><th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Budget</th><th>Timeline</th><th>Type</th><th>Date</th></tr>';
+        contactsTable.innerHTML = header + items.map(c => `
+          <tr>
+            <td>${c.name||''}</td>
+            <td>${c.email||''}</td>
+            <td>${c.phone||''}</td>
+            <td>${c.service||''}</td>
+            <td>${c.budget||''}</td>
+            <td>${c.timeline||''}</td>
+            <td>${c.enquiryType||''}</td>
+            <td>${new Date(c.dateSubmitted).toLocaleString()}</td>
+          </tr>`).join('');
+        contactsStatus.textContent = '';
+      } catch(err){ contactsStatus.textContent = err.message; }
+    }
+
+    async function loadSubscriptions(){
+      subscriptionsStatus.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/admin/subscriptions');
+        await handleAuthFailureIfNeeded(res);
+        const items = await res.json();
+        if (!res.ok) throw new Error(items.error || 'Failed to load');
+        const header = '<tr><th>Email</th><th>Date Subscribed</th></tr>';
+        subscriptionsTable.innerHTML = header + items.map(s => `
+          <tr>
+            <td>${s.email}</td>
+            <td>${new Date(s.dateSubscribed).toLocaleString()}</td>
+          </tr>`).join('');
+        subscriptionsStatus.textContent = '';
+      } catch(err){ subscriptionsStatus.textContent = err.message; }
+    }
+
+    async function loadPayments(){
+      paymentsStatus.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/admin/payments');
+        await handleAuthFailureIfNeeded(res);
+        const items = await res.json();
+        if (!res.ok) throw new Error(items.error || 'Failed to load');
+        const header = '<tr><th>Name</th><th>Email</th><th>Project</th><th>Agreed</th><th>Deposit</th><th>Currency</th><th>Status</th><th>Date</th></tr>';
+        paymentsTable.innerHTML = header + items.map(p => `
+          <tr>
+            <td>${p.name||''}</td>
+            <td>${p.email||''}</td>
+            <td>${p.projectRef||''}</td>
+            <td>${p.agreed ?? ''}</td>
+            <td>${p.depositAmount ?? ''}</td>
+            <td>${p.currency}</td>
+            <td>${p.status}</td>
+            <td>${new Date(p.dateCreated).toLocaleString()}</td>
+          </tr>`).join('');
+        paymentsStatus.textContent = '';
+      } catch(err){ paymentsStatus.textContent = err.message; }
+    }
+
+    // Auto-init dashboard
+    showDashboard();
+
+    // Highlight active tab
+    function highlightActiveTab(tabName) {
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-tab') === tabName) {
+          btn.classList.add('active');
+        }
+      });
+    }
+
+    // Update switchTab to highlight active tab
+    const originalSwitchTab = switchTab;
+    switchTab = function(tab) {
+      originalSwitchTab(tab);
+      highlightActiveTab(tab);
+    };
+
+    // Initial tab highlight
+    highlightActiveTab('projects');
+  </script>
+</body>
+</html>
+
+

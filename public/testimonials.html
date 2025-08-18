@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Testimonials | Kodara-HQ</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/image/Kodara logo1.png" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/services.html">Services</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/testimonials.html" class="active">Testimonials</a>
+        <a href="/intake.html">Intake</a>
+        <a href="/contact.html" class="btn btn-sm">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <h1>What Clients Say</h1>
+        <div id="testimonials" class="grid-3"></div>
+        <p id="testimonialsStatus" class="status"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Kodara-HQ. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    fetch('/api/testimonials')
+      .then(r => r.json())
+      .then(items => {
+        const list = document.getElementById('testimonials');
+        if (!items || items.length === 0) {
+          document.getElementById('testimonialsStatus').textContent = 'No testimonials yet.';
+          return;
+        }
+        items.forEach(t => {
+          const card = document.createElement('div');
+          card.className = 'card testimonial';
+          card.innerHTML = `
+            <div class="rating">${'★'.repeat(t.rating || 5)}</div>
+            <p class="feedback">${t.feedback}</p>
+            <div class="client">— ${t.clientName}</div>
+          `;
+          list.appendChild(card);
+        });
+      })
+      .catch(() => {
+        document.getElementById('testimonialsStatus').textContent = 'Failed to load testimonials.';
+      });
+  </script>
+</body>
+</html>
+
+

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio | Kodara-HQ</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/image/Kodara logo1.png" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/services.html">Services</a>
+        <a href="/portfolio.html" class="active">Portfolio</a>
+        <a href="/testimonials.html">Testimonials</a>
+        <a href="/intake.html">Intake</a>
+        <a href="/contact.html" class="btn btn-sm">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero portfolio-hero with-watermark">
+      <div class="container">
+        <h1>Selected Projects</h1>
+        <p class="lead">A snapshot of products we’ve designed and built. Explore outcomes, not just deliverables.</p>
+        <div class="inline-form" style="margin-top:16px">
+          <input id="projectSearch" type="search" placeholder="Search projects by title..." />
+          <button id="clearSearch" class="btn btn-secondary" type="button">Clear</button>
+        </div>
+      </div>
+      <div class="hero-bg" aria-hidden="true"></div>
+    </section>
+
+    <section class="section">
+      <div class="container section-panel">
+        <div id="projects" class="grid-3"></div>
+        <p id="projectsStatus" class="status"></p>
+        <div style="text-align:center;margin-top:18px">
+          <button id="loadMoreBtn" class="btn" style="display:none">Load more</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Kodara-HQ. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    (function(){
+      const list = document.getElementById('projects');
+      const status = document.getElementById('projectsStatus');
+      const loadMoreBtn = document.getElementById('loadMoreBtn');
+      const searchInput = document.getElementById('projectSearch');
+      const clearBtn = document.getElementById('clearSearch');
+
+      let all = [];
+      let page = 1;
+      const pageSize = 6;
+
+      function normalizeProject(p){ return p; }
+
+      function previewFromLink(p){
+        // Prefer explicit imageURL first (e.g., local image)
+        if (p?.imageURL) return p.imageURL;
+        try {
+          if (p && p.link) {
+            const origin = new URL(p.link).origin;
+            return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(origin)}&sz=256`;
+          }
+        } catch (e) { /* noop */ }
+        return '';
+      }
+
+      function render(items, reset=false){
+        if (reset) list.innerHTML='';
+        const slice = items.slice((page-1)*pageSize, page*pageSize);
+        slice.forEach(p => {
+          const card = document.createElement('a');
+          card.className = 'card project';
+          card.href = p.link || '#';
+          card.target = '_blank';
+          card.rel = 'noopener noreferrer';
+          const preview = previewFromLink(p);
+          const hasImage = preview && String(preview).trim().length > 0;
+          const isFavicon = hasImage && preview.includes('www.google.com/s2/favicons');
+          if (isFavicon) {
+            card.innerHTML = `
+              <div class="thumb icon"><img src="${preview}" alt="logo"/></div>
+              <div class="content">
+                <h3>${p.title}</h3>
+                <p>${p.description || ''}</p>
+              </div>
+            `;
+          } else {
+            card.innerHTML = `
+              ${hasImage ? `<div class="thumb" style="background-image:url('${preview}')"></div>` : `<div class="thumb placeholder">🖼️</div>`}
+              <div class="content">
+                <h3>${p.title}</h3>
+                <p>${p.description || ''}</p>
+              </div>
+            `;
+          }
+          list.appendChild(card);
+        });
+        const totalPages = Math.ceil(items.length / pageSize);
+        loadMoreBtn.style.display = page < totalPages ? 'inline-block' : 'none';
+      }
+
+      function applyFilter(){
+        const q = (searchInput?.value || '').toLowerCase().trim();
+        const filtered = q ? all.filter(p => (p.title||'').toLowerCase().includes(q)) : all;
+        page = 1; render(filtered, true);
+        status.textContent = filtered.length === 0 ? 'No matching projects.' : '';
+      }
+
+      function load(){
+        fetch('/api/projects')
+          .then(r => r.json())
+          .then(items => {
+            all = (items || []).map(normalizeProject);
+            if (!all.length) { status.textContent = 'No projects available yet.'; return; }
+            applyFilter();
+          })
+          .catch(() => {
+            status.textContent = 'Failed to load projects.';
+          });
+      }
+
+      loadMoreBtn?.addEventListener('click', () => { page += 1; applyFilter(); });
+      clearBtn?.addEventListener('click', () => { if (searchInput) { searchInput.value=''; applyFilter(); } });
+      searchInput?.addEventListener('input', () => { page = 1; applyFilter(); });
+      load();
+    })();
+  </script>
+</body>
+</html>
+
+

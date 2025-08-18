@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Intake | Kodara-HQ</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/image/Kodara logo1.png" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/services.html">Services</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/contact.html" class="btn btn-sm">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container narrow">
+        <h1>Project Intake & Deposit</h1>
+        <p>Confirm your project details and pay a 50% deposit to initiate the work.</p>
+
+        <form id="intakeForm" class="stack form-grid">
+          <label>
+            <span>Your name</span>
+            <input type="text" name="name" placeholder="Full name" required />
+          </label>
+          <label>
+            <span>Email</span>
+            <input type="email" name="email" placeholder="you@company.com" required />
+          </label>
+          <label>
+            <span>Project reference</span>
+            <input type="text" name="projectRef" placeholder="e.g. QUO-2025-001" />
+          </label>
+          <label>
+            <span>Total agreed amount</span>
+            <input type="number" min="0" step="0.01" name="agreed" id="agreed" placeholder="e.g. 2000" required />
+          </label>
+          <label>
+            <span>Currency</span>
+            <select name="currency" id="currency">
+              <option value="usd">USD</option>
+              <option value="ghs">GHS (Ghana Cedis)</option>
+            </select>
+          </label>
+          <div class="full card" id="summary" style="display:flex; align-items:center; justify-content:space-between">
+            <div>
+              <strong>Deposit (50%)</strong>
+              <p class="muted" id="depositText">—</p>
+            </div>
+            <button type="button" class="btn" id="payBtn">Pay deposit</button>
+          </div>
+        </form>
+
+        <p class="status" id="intakeStatus"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Kodara-HQ. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    const agreed = document.getElementById('agreed');
+    const currency = document.getElementById('currency');
+    const depositText = document.getElementById('depositText');
+    const payBtn = document.getElementById('payBtn');
+    const statusEl = document.getElementById('intakeStatus');
+
+    function updateDeposit() {
+      const amt = parseFloat(agreed.value || '0');
+      if (!isFinite(amt) || amt <= 0) { depositText.textContent = '—'; return; }
+      const depo = amt * 0.5;
+      depositText.textContent = `${depo.toLocaleString(undefined, { style: 'currency', currency: currency.value.toUpperCase() })}`;
+    }
+    agreed.addEventListener('input', updateDeposit);
+    currency.addEventListener('change', updateDeposit);
+    updateDeposit();
+
+    async function createIntent(amountMinor, ccy, meta) {
+      const res = await fetch('/api/payments/create-intent', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: amountMinor, currency: ccy, metadata: meta })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to initialize');
+      return data.clientSecret;
+    }
+
+    payBtn.addEventListener('click', async () => {
+      statusEl.textContent = '';
+      payBtn.disabled = true;
+      payBtn.textContent = 'Initializing…';
+      const amt = parseFloat(agreed.value || '0');
+      if (!isFinite(amt) || amt <= 0) { statusEl.textContent = 'Enter a valid agreed amount.'; return; }
+      const deposit = Math.round(amt * 0.5 * 100); // minor units
+      try {
+        const form = document.getElementById('intakeForm');
+        const formData = new FormData(form);
+        const meta = {
+          name: formData.get('name') || '',
+          email: formData.get('email') || '',
+          projectRef: formData.get('projectRef') || '',
+          agreed: String(amt)
+        };
+        const clientSecret = await createIntent(deposit, currency.value, meta);
+        // If publishable key is set, mount Payment Element for client-side confirmation
+        const cfgRes = await fetch('/api/payments/config');
+        const cfg = await cfgRes.json();
+        if (cfg.publishableKey) {
+          const stripe = Stripe(cfg.publishableKey);
+          const elements = stripe.elements({ clientSecret });
+          let mount = document.getElementById('paymentElement');
+          if (!mount) {
+            mount = document.createElement('div');
+            mount.id = 'paymentElement';
+            mount.className = 'card';
+            mount.style.padding = '16px';
+            mount.style.marginTop = '12px';
+            document.querySelector('.container.narrow').appendChild(mount);
+            const payConfirm = document.createElement('button');
+            payConfirm.className = 'btn';
+            payConfirm.textContent = 'Confirm payment';
+            payConfirm.id = 'confirmBtn';
+            document.querySelector('.container.narrow').appendChild(payConfirm);
+            payConfirm.addEventListener('click', async () => {
+              statusEl.textContent = 'Processing...';
+              const { error } = await stripe.confirmPayment({ elements, redirect: 'if_required' });
+              if (error) { statusEl.textContent = error.message; } else { statusEl.textContent = 'Payment successful!'; }
+            });
+          }
+          const paymentElement = elements.create('payment');
+          paymentElement.mount(mount);
+          statusEl.textContent = 'Enter your payment details to complete the deposit.';
+        } else {
+          statusEl.textContent = 'Deposit initialized. Provide Stripe keys to enable on-page checkout.';
+        }
+      } catch (e) {
+        statusEl.textContent = 'Payment setup failed: ' + e.message;
+      } finally {
+        payBtn.disabled = false;
+        payBtn.textContent = 'Pay deposit';
+      }
+    });
+  </script>
+</body>
+</html>
+
+

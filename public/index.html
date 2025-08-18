@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kodara-HQ | Innovating the Future with Code</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/image/Kodara logo1.png" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/services.html">Services</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/testimonials.html">Testimonials</a>
+        <a href="/intake.html">Intake</a>
+        <a href="/contact.html" class="btn btn-sm">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero with-watermark watermark-home">
+      <div class="container">
+        <h1>Innovating the Future with Code</h1>
+        <p class="lead">We design and build high-quality websites, apps, and custom software that scale.</p>
+        <div class="cta-group">
+          <a class="btn" href="/services.html">View Services</a>
+          <a class="btn btn-secondary" href="/contact.html">Contact Us</a>
+        </div>
+      </div>
+      <div class="hero-bg" aria-hidden="true"></div>
+    </section>
+
+    <section class="section">
+      <div class="container grid-3">
+        <div class="card">
+          <h3>Web Development</h3>
+          <p>Modern, responsive sites built with performance and SEO in mind.</p>
+        </div>
+        <div class="card">
+          <h3>App Development</h3>
+          <p>Robust mobile and desktop apps tailored to your business needs.</p>
+        </div>
+        <div class="card">
+          <h3>Software Solutions</h3>
+          <p>Custom platforms, automation, and integrations that drive growth.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container section-panel">
+        <h2>About Kodara‑HQ</h2>
+        <p>Kodara‑HQ is a product‑minded engineering studio. We design and deliver websites, mobile apps, and custom software that are reliable, scalable, and delightful to use.</p>
+        <div class="grid-2" style="margin-top:12px">
+          <div class="card"><h4>Mission</h4><p>Empower organizations with elegant, maintainable software that accelerates outcomes.</p></div>
+          <div class="card"><h4>Vision</h4><p>Be a trusted partner for digital transformation—known for quality, velocity, and care.</p></div>
+        </div>
+        <p style="margin-top:14px"><a class="btn btn-secondary" href="/about.html">Learn more</a></p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container section-panel">
+        <h2>Our Work</h2>
+        <div id="projects" class="grid-3" data-limit="3"></div>
+        <p id="projectsStatus" class="status"></p>
+        <p style="margin-top:10px"><a class="btn btn-secondary" href="/portfolio.html">View all projects</a></p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>What Clients Say</h2>
+        <div id="testimonials" class="grid-3" data-limit="3"></div>
+        <p id="testimonialsStatus" class="status"></p>
+        <p style="margin-top:10px"><a class="btn btn-secondary" href="/testimonials.html">Read more testimonials</a></p>
+      </div>
+    </section>
+
+    <section class="section subscribe">
+      <div class="container">
+        <h2>Stay in the loop</h2>
+        <form id="subscribeForm" class="inline-form">
+          <input type="email" name="email" placeholder="Your email" required />
+          <button type="submit" class="btn">Subscribe</button>
+        </form>
+        <p id="subscribeStatus" class="status"></p>
+        <p style="margin-top:16px"><a class="btn" href="/contact.html">Start a project</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Kodara-HQ. All rights reserved.</p>
+      <div class="socials">
+        <a href="#" aria-label="Twitter">Twitter</a>
+        <a href="#" aria-label="LinkedIn">LinkedIn</a>
+        <a href="#" aria-label="GitHub">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
+
