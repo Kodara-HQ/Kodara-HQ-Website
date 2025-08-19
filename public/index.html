@@ -16,21 +16,33 @@
     <div class="container nav">
       <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
       
-      <!-- Mobile menu button -->
-      <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
-        <span></span>
-        <span></span>
-        <span></span>
+      <!-- Super simple mobile menu -->
+      <div id="mobileMenu" style="display: none; position: fixed; top: 0; right: 0; width: 250px; height: 100vh; background: white; box-shadow: -2px 0 10px rgba(0,0,0,0.1); z-index: 1000; padding: 80px 20px 20px 20px;">
+        <a href="/" style="display: block; padding: 15px; border-bottom: 1px solid #eee; text-decoration: none; color: #333;">Home</a>
+        <a href="/about.html" style="display: block; padding: 15px; border-bottom: 1px solid #eee; text-decoration: none; color: #333;">About</a>
+        <a href="/services.html" style="display: block; padding: 15px; border-bottom: 1px solid #eee; text-decoration: none; color: #333;">Services</a>
+        <a href="/portfolio.html" style="display: block; padding: 15px; border-bottom: 1px solid #eee; text-decoration: none; color: #333;">Portfolio</a>
+        <a href="/testimonials.html" style="display: block; padding: 15px; border-bottom: 1px solid #eee; text-decoration: none; color: #333;">Testimonials</a>
+        <a href="/intake.html" style="display: block; padding: 15px; border-bottom: 1px solid #eee; text-decoration: none; color: #333;">Intake</a>
+        <a href="/contact.html" style="display: block; padding: 15px; border-bottom: 1px solid #eee; text-decoration: none; color: #333; background: #007bff; color: white; text-align: center; border-radius: 4px;">Contact</a>
+      </div>
+      
+      <!-- Simple button -->
+      <button id="menuBtn" style="display: none; width: 30px; height: 30px; background: #007bff; border: none; cursor: pointer; border-radius: 4px;">
+        <span style="display: block; width: 100%; height: 3px; background: white; margin: 3px 0; border-radius: 2px;"></span>
+        <span style="display: block; width: 100%; height: 3px; background: white; margin: 3px 0; border-radius: 2px;"></span>
+        <span style="display: block; width: 100%; height: 3px; background: white; margin: 3px 0; border-radius: 2px;"></span>
       </button>
       
-      <nav class="nav-menu">
-        <a href="/">Home</a>
-        <a href="/about.html">About</a>
-        <a href="/services.html">Services</a>
-        <a href="/portfolio.html">Portfolio</a>
-        <a href="/testimonials.html">Testimonials</a>
-        <a href="/intake.html">Intake</a>
-        <a href="/contact.html" class="btn btn-sm">Contact</a>
+      <!-- Desktop menu -->
+      <nav id="desktopMenu" style="display: flex; align-items: center; gap: 20px;">
+        <a href="/" style="color: #333; text-decoration: none; padding: 8px 16px;">Home</a>
+        <a href="/about.html" style="color: #333; text-decoration: none; padding: 8px 16px;">About</a>
+        <a href="/services.html" style="color: #333; text-decoration: none; padding: 8px 16px;">Services</a>
+        <a href="/portfolio.html" style="color: #333; text-decoration: none; padding: 8px 16px;">Portfolio</a>
+        <a href="/testimonials.html" style="color: #333; text-decoration: none; padding: 8px 16px;">Testimonials</a>
+        <a href="/intake.html" style="color: #333; text-decoration: none; padding: 8px 16px;">Intake</a>
+        <a href="/contact.html" style="background: #007bff; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px;">Contact</a>
       </nav>
     </div>
   </header>
@@ -147,65 +159,74 @@
 
   <script src="/js/main.js"></script>
   
-  <!-- Mobile menu functionality -->
+  <!-- Super simple mobile menu functionality -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM loaded, looking for mobile menu elements...');
+      const menuBtn = document.getElementById('menuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      const desktopMenu = document.getElementById('desktopMenu');
       
-      const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-      const navMenu = document.querySelector('.nav-menu');
-      
-      console.log('Mobile menu toggle found:', mobileMenuToggle);
-      console.log('Nav menu found:', navMenu);
-      console.log('Mobile menu toggle display style:', window.getComputedStyle(mobileMenuToggle).display);
-      console.log('Nav menu display style:', window.getComputedStyle(navMenu).display);
-      
-      if (mobileMenuToggle && navMenu) {
-        console.log('Both elements found, adding event listeners...');
-        
-        mobileMenuToggle.addEventListener('click', function(e) {
-          console.log('Mobile menu toggle clicked!');
-          e.preventDefault();
-          e.stopPropagation();
-          
-          const wasActive = navMenu.classList.contains('active');
-          navMenu.classList.toggle('active');
-          mobileMenuToggle.classList.toggle('active');
-          
-          console.log('Nav menu active:', !wasActive);
-          console.log('Nav menu classes:', navMenu.className);
-          console.log('Toggle classes:', mobileMenuToggle.className);
-        });
-        
-        // Close menu when clicking on a link
-        const navLinks = document.querySelectorAll('.nav-menu a');
-        console.log('Found nav links:', navLinks.length);
-        
-        navLinks.forEach(link => {
-          link.addEventListener('click', () => {
-            console.log('Nav link clicked, closing menu');
-            navMenu.classList.remove('active');
-            mobileMenuToggle.classList.remove('active');
-          });
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-          if (!event.target.closest('.nav') && !event.target.closest('.mobile-menu-toggle')) {
-            console.log('Clicking outside, closing menu');
-            navMenu.classList.remove('active');
-            mobileMenuToggle.classList.remove('active');
-          }
-        });
-        
-        console.log('Event listeners added successfully');
-      } else {
-        console.error('Mobile menu elements not found!');
-        console.error('mobileMenuToggle:', mobileMenuToggle);
-        console.error('navMenu:', navMenu);
+      // Show/hide mobile button based on screen size
+      function checkScreenSize() {
+        if (window.innerWidth <= 768) {
+          menuBtn.style.display = 'block';
+          desktopMenu.style.display = 'none';
+        } else {
+          menuBtn.style.display = 'none';
+          desktopMenu.style.display = 'flex';
+          mobileMenu.style.display = 'none';
+        }
       }
+      
+      // Toggle mobile menu
+      menuBtn.addEventListener('click', function() {
+        if (mobileMenu.style.display === 'none') {
+          mobileMenu.style.display = 'block';
+        } else {
+          mobileMenu.style.display = 'none';
+        }
+      });
+      
+      // Close menu when clicking on a link
+      const mobileLinks = mobileMenu.querySelectorAll('a');
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.style.display = 'none';
+        });
+      });
+      
+      // Check screen size on load and resize
+      checkScreenSize();
+      window.addEventListener('resize', checkScreenSize);
     });
   </script>
+  
+  <style>
+    /* Simple responsive styles */
+    @media (max-width: 768px) {
+      .nav {
+        justify-content: space-between;
+      }
+      
+      #menuBtn {
+        display: block !important;
+      }
+      
+      #desktopMenu {
+        display: none !important;
+      }
+    }
+    
+    @media (min-width: 769px) {
+      #menuBtn {
+        display: none !important;
+      }
+      
+      #desktopMenu {
+        display: flex !important;
+      }
+    }
+  </style>
 </body>
 </html>
 

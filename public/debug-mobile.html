@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Menu Debug</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 30px;
+            background: #007bff;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 4px;
+        }
+        
+        .mobile-menu-toggle span {
+            width: 100%;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .nav-menu a {
+            color: #333;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-menu a:hover {
+            background: #f0f0f0;
+        }
+        
+        .debug-info {
+            padding: 2rem;
+            background: white;
+            margin: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .debug-info h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .debug-info p {
+            margin-bottom: 0.5rem;
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: flex !important;
+            }
+            
+            .nav-menu {
+                display: none !important;
+            }
+            
+            .nav-menu.mobile-active {
+                display: flex !important;
+                position: fixed !important;
+                top: 0 !important;
+                right: 0 !important;
+                width: 250px !important;
+                height: 100vh !important;
+                background: white !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+                align-items: flex-start !important;
+                padding: 80px 20px 20px 20px !important;
+                box-shadow: -2px 0 10px rgba(0,0,0,0.1) !important;
+                gap: 20px !important;
+                z-index: 1000 !important;
+            }
+            
+            .nav-menu.mobile-active a {
+                width: 100% !important;
+                padding: 15px !important;
+                border-bottom: 1px solid #eee !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <div class="logo">Kodara-HQ</div>
+        <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="nav-menu">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+        </nav>
+    </nav>
+    
+    <div class="debug-info">
+        <h3>🔍 Mobile Menu Debug</h3>
+        <p><strong>Instructions:</strong></p>
+        <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+            <li>Resize browser to mobile size (&lt; 768px width)</li>
+            <li>Click the blue hamburger button</li>
+            <li>Check console for debug info</li>
+        </ul>
+        
+        <p><strong>Current Status:</strong></p>
+        <p id="status">Loading...</p>
+        
+        <p><strong>Browser Width:</strong> <span id="width">-</span>px</p>
+        <p><strong>Toggle Button Visible:</strong> <span id="toggle-visible">-</span></p>
+        <p><strong>Nav Menu Classes:</strong> <span id="nav-classes">-</span></p>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔍 Debug page loaded');
+            
+            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+            const statusEl = document.getElementById('status');
+            const widthEl = document.getElementById('width');
+            const toggleVisibleEl = document.getElementById('toggle-visible');
+            const navClassesEl = document.getElementById('nav-classes');
+            
+            function updateDebugInfo() {
+                const width = window.innerWidth;
+                const toggleStyle = window.getComputedStyle(mobileMenuToggle);
+                const navStyle = window.getComputedStyle(navMenu);
+                
+                widthEl.textContent = width;
+                toggleVisibleEl.textContent = toggleStyle.display;
+                navClassesEl.textContent = navMenu.className;
+                
+                if (width <= 768) {
+                    statusEl.textContent = 'Mobile view - Menu should work';
+                    statusEl.style.color = 'green';
+                } else {
+                    statusEl.textContent = 'Desktop view - Resize to mobile to test';
+                    statusEl.style.color = 'orange';
+                }
+            }
+            
+            if (mobileMenuToggle && navMenu) {
+                console.log('✅ Elements found');
+                statusEl.textContent = 'Elements found - Ready to test';
+                statusEl.style.color = 'green';
+                
+                mobileMenuToggle.addEventListener('click', function(e) {
+                    console.log('🟢 Toggle clicked!');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const wasActive = navMenu.classList.contains('mobile-active');
+                    navMenu.classList.toggle('mobile-active');
+                    mobileMenuToggle.classList.toggle('active');
+                    
+                    console.log('Menu active:', !wasActive);
+                    console.log('Nav classes:', navMenu.className);
+                    console.log('Toggle classes:', mobileMenuToggle.className);
+                    
+                    updateDebugInfo();
+                });
+                
+                // Close menu when clicking on a link
+                const navLinks = document.querySelectorAll('.nav-menu a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', () => {
+                        console.log('🔗 Link clicked, closing menu');
+                        navMenu.classList.remove('mobile-active');
+                        mobileMenuToggle.classList.remove('active');
+                        updateDebugInfo();
+                    });
+                });
+                
+                // Close menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!event.target.closest('.nav') && !event.target.closest('.mobile-menu-toggle')) {
+                        console.log('🔄 Clicking outside, closing menu');
+                        navMenu.classList.remove('mobile-active');
+                        mobileMenuToggle.classList.remove('active');
+                        updateDebugInfo();
+                    }
+                });
+                
+                updateDebugInfo();
+                window.addEventListener('resize', updateDebugInfo);
+                
+            } else {
+                console.error('❌ Elements not found!');
+                statusEl.textContent = 'ERROR: Elements not found!';
+                statusEl.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>

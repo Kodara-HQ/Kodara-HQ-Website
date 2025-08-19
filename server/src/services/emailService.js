@@ -42,19 +42,106 @@ async function sendContactNotification({ name, email, message, phone, company, s
   await transporter.sendMail(mail);
 }
 
-async function sendContactAutoReply({ name, toEmail }) {
+async function sendContactAutoReply({ name, toEmail, enquiryType, service, company }) {
   const enabled = (process.env.CONTACT_AUTOREPLY_ENABLED || 'true') === 'true';
   if (!enabled) return;
-  const transporter = createTransport();
-  const from = process.env.CONTACT_FROM_EMAIL || process.env.SMTP_USER;
-  const subject = process.env.CONTACT_AUTOREPLY_SUBJECT || 'Thanks for contacting Kodara-HQ';
-  const html = `
-    <p>Hi ${name || 'there'},</p>
-    <p>Thanks for reaching out to Kodara-HQ. Your message has been received and our team will get back to you shortly.</p>
-    <p>If this is urgent, reply to this email and we will prioritize it.</p>
-    <p>— Kodara-HQ Team</p>
-  `;
-  await transporter.sendMail({ from, to: toEmail, subject, html, text: html.replace(/<[^>]+>/g, '') });
+  
+  try {
+    const transporter = createTransport();
+    const from = process.env.CONTACT_FROM_EMAIL || process.env.SMTP_USER;
+    const subject = process.env.CONTACT_AUTOREPLY_SUBJECT || 'Thank you for contacting Kodara-HQ';
+    
+    // Customize message based on enquiry type
+    let personalizedMessage = process.env.AUTOREPLY_WELCOME_MESSAGE || 
+      'Thank you for reaching out to Kodara-HQ. Your message has been received and our team will get back to you within 24 hours.';
+    
+    if (enquiryType === 'urgent') {
+      personalizedMessage = 'Thank you for your urgent enquiry. We have prioritized your request and will respond as soon as possible.';
+    } else if (service) {
+      personalizedMessage = `Thank you for your interest in our ${service} services. Our team will review your requirements and get back to you within 24 hours.`;
+    }
+    
+    const urgentNote = process.env.AUTOREPLY_URGENT_NOTE || 
+      'If this is urgent, please reply to this email and we will prioritize your request.';
+    
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; padding: 20px; border-radius: 8px; text-align: center;">
+          <h1 style="margin: 0; font-size: 24px;">Kodara-HQ</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Innovating the Future with Code</p>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">
+          <h2 style="color: #333; margin-top: 0;">Hi ${name || 'there'},</h2>
+          
+          <p style="color: #555; line-height: 1.6;">${personalizedMessage}</p>
+          
+          ${company ? `<p style="color: #555; line-height: 1.6;"><strong>Company:</strong> ${company}</p>` : ''}
+          ${enquiryType ? `<p style="color: #555; line-height: 1.6;"><strong>Enquiry Type:</strong> ${enquiryType}</p>` : ''}
+          ${service ? `<p style="color: #555; line-height: 1.6;"><strong>Service Interest:</strong> ${service}</p>` : ''}
+          
+          <p style="color: #555; line-height: 1.6;">${urgentNote}</p>
+          
+          <div style="background: #e3f2fd; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #2196f3;">
+            <p style="margin: 0; color: #1976d2; font-weight: 500;">
+              <strong>What happens next?</strong><br>
+              • We'll review your requirements within 24 hours<br>
+              • Our team will contact you with a detailed proposal<br>
+              • We'll schedule a consultation to discuss your project
+            </p>
+          </div>
+          
+          <p style="color: #555; line-height: 1.6;">
+            Best regards,<br>
+            <strong>The Kodara-HQ Team</strong>
+          </p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; padding: 20px; background: #f1f3f4; border-radius: 8px;">
+          <p style="margin: 0; color: #666; font-size: 14px;">
+            This is an automated response. Please do not reply to this email.<br>
+            For urgent matters, contact us directly at admin@kodara-hq.org
+          </p>
+        </div>
+      </div>
+    `;
+    
+    const text = `
+Hi ${name || 'there'},
+
+${personalizedMessage}
+
+${company ? `Company: ${company}` : ''}
+${enquiryType ? `Enquiry Type: ${enquiryType}` : ''}
+${service ? `Service Interest: ${service}` : ''}
+
+${urgentNote}
+
+What happens next?
+• We'll review your requirements within 24 hours
+• Our team will contact you with a detailed proposal
+• We'll schedule a consultation to discuss your project
+
+Best regards,
+The Kodara-HQ Team
+
+---
+This is an automated response. For urgent matters, contact us at admin@kodara-hq.org
+    `;
+    
+    await transporter.sendMail({ 
+      from, 
+      to: toEmail, 
+      subject, 
+      html, 
+      text: text.trim() 
+    });
+    
+    console.log(`✅ Auto-reply sent to ${toEmail} for ${name}`);
+  } catch (error) {
+    console.error(`❌ Failed to send auto-reply to ${toEmail}:`, error);
+    // Don't throw error - auto-reply failure shouldn't break the main contact submission
+  }
 }
 
 async function sendPasswordResetEmail(toEmail, link) {

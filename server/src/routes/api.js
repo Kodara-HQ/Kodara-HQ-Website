@@ -14,6 +14,7 @@ const adminController = require('../controllers/adminController');
 const router = express.Router();
 
 router.post('/contact', upload.single('attachment'), contactController.handleContact);
+router.post('/contact/test-autoreply', contactController.testAutoReply);
 router.post('/auth/login', authController.login);
 router.post('/auth/register', authController.register);
 router.post('/auth/forgot', authController.forgotPassword);

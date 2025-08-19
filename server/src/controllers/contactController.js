@@ -33,7 +33,7 @@ async function handleContact(req, res) {
     try {
       await Promise.all([
         sendContactNotification({ name, email, message, phone, company, service, budget, timeline, enquiryType, attachmentPath }),
-        sendContactAutoReply({ name, toEmail: email })
+        sendContactAutoReply({ name, toEmail: email, enquiryType, service, company })
       ]);
     } catch (emailErr) {
       // eslint-disable-next-line no-console
@@ -48,6 +48,35 @@ async function handleContact(req, res) {
   }
 }
 
-module.exports = { handleContact };
+async function testAutoReply(req, res) {
+  try {
+    const { email, name, enquiryType, service, company } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required for testing.' });
+    }
+    
+    console.log('🧪 Testing auto-reply system...');
+    
+    await sendContactAutoReply({ 
+      name: name || 'Test User', 
+      toEmail: email, 
+      enquiryType: enquiryType || 'general', 
+      service: service || 'Web Development', 
+      company: company || 'Test Company' 
+    });
+    
+    return res.status(200).json({ 
+      success: true, 
+      message: 'Auto-reply test email sent successfully!',
+      sentTo: email
+    });
+  } catch (err) {
+    console.error('Auto-reply test error:', err);
+    return res.status(500).json({ error: 'Failed to send test auto-reply' });
+  }
+}
+
+module.exports = { handleContact, testAutoReply };
 
 
