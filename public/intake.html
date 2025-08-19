@@ -12,7 +12,14 @@
   <header class="site-header">
     <div class="container nav">
       <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
-      <nav>
+      <!-- Mobile menu button -->
+      <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <nav class="nav-menu">
         <a href="/">Home</a>
         <a href="/services.html">Services</a>
         <a href="/portfolio.html">Portfolio</a>
@@ -154,6 +161,36 @@
         payBtn.disabled = false;
         payBtn.textContent = 'Pay deposit';
       }
+    });
+  </script>
+  
+  <!-- Mobile menu functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+      const navMenu = document.querySelector('.nav-menu');
+      
+      mobileMenuToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        mobileMenuToggle.classList.toggle('active');
+      });
+      
+      // Close menu when clicking on a link
+      const navLinks = document.querySelectorAll('.nav-menu a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          navMenu.classList.remove('active');
+          mobileMenuToggle.classList.remove('active');
+        });
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.nav') && !event.target.closest('.mobile-menu-toggle')) {
+          navMenu.classList.remove('active');
+          mobileMenuToggle.classList.remove('active');
+        }
+      });
     });
   </script>
 </body>

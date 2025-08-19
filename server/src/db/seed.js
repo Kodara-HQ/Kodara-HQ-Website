@@ -5,16 +5,22 @@ const { getPool, sql } = require('./pool');
 async function seedProjects(pool) {
   const projects = [
     {
-      title: 'Sunyani Fashion Hub Platform',
-      description: 'Kodara-HQ built a community platform connecting local designers with clients in Sunyani, Ghana — directory, booking, and profiles included.',
+      title: 'Restaurant Hub - Odumase',
+      description: 'Food delivery platform connecting local restaurants with customers in Odumase, Ghana. Features restaurant discovery, menu browsing, and online ordering.',
+      imageURL: '/image/logo-Restaurant Hub.png',
+      link: 'https://restaurant-35yk.onrender.com/'
+    },
+    {
+      title: 'Sunyani Fashion Hub',
+      description: 'Fashion designer marketplace showcasing local talent in Sunyani. Connect with designers, book consultations, and explore custom fashion collections.',
       imageURL: '/image/fashion.avif',
       link: 'https://uenr-fashion.onrender.com/'
     },
     {
-      title: 'Restaurant Hub - Odumase',
-      description: 'Discover and order from the best local restaurants in Odumase with an intuitive web app.',
-      imageURL: '/image/logo-Restaurant Hub.png',
-      link: 'https://restaurant-35yk.onrender.com/'
+      title: 'UENR Student Hostel Booking',
+      description: 'Student accommodation booking platform for University of Energy and Natural Resources. Browse hostels, compare prices, and book rooms online.',
+      imageURL: '/image/UENR.png',
+      link: 'https://hostel-eao2.onrender.com/'
     },
     {
       title: 'Kodara‑HQ Website',

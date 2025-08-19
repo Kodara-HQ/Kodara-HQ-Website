@@ -12,7 +12,14 @@
   <header class="site-header">
     <div class="container nav">
       <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
-      <nav>
+      <!-- Mobile menu button -->
+      <button class="mobile-menu-toggle" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <nav class="nav-menu">
         <a href="/">Home</a>
         <a href="/about.html">About</a>
         <a href="/services.html">Services</a>
@@ -39,6 +46,34 @@
 
     <section class="section">
       <div class="container section-panel">
+        <!-- Showcase Projects -->
+        <div class="grid-3" style="margin-bottom: 40px;">
+          <a href="https://restaurant-35yk.onrender.com/" target="_blank" rel="noopener noreferrer" class="card project">
+            <div class="thumb" style="background-image:url('/image/logo-Restaurant%20Hub.png'); background-size: contain; background-color: #f8fafc;"></div>
+            <div class="content">
+              <h3>Restaurant Hub - Odumase</h3>
+              <p>Food delivery platform connecting local restaurants with customers in Odumase, Ghana. Features restaurant discovery, menu browsing, and online ordering.</p>
+            </div>
+          </a>
+          
+          <a href="https://uenr-fashion.onrender.com/" target="_blank" rel="noopener noreferrer" class="card project">
+            <div class="thumb" style="background-image:url('/image/fashion.avif'); background-size: cover;"></div>
+            <div class="content">
+              <h3>Sunyani Fashion Hub</h3>
+              <p>Fashion designer marketplace showcasing local talent in Sunyani. Connect with designers, book consultations, and explore custom fashion collections.</p>
+            </div>
+          </a>
+          
+          <a href="https://hostel-eao2.onrender.com/" target="_blank" rel="noopener noreferrer" class="card project">
+            <div class="thumb" style="background-image:url('/image/UENR.png'); background-size: contain; background-color: #f8fafc;"></div>
+            <div class="content">
+              <h3>UENR Student Hostel Booking</h3>
+              <p>Student accommodation booking platform for University of Energy and Natural Resources. Browse hostels, compare prices, and book rooms online.</p>
+            </div>
+          </a>
+        </div>
+        
+        <h2 style="margin-bottom: 20px; text-align: center;">More Projects</h2>
         <div id="projects" class="grid-3"></div>
         <p id="projectsStatus" class="status"></p>
         <div style="text-align:center;margin-top:18px">
@@ -142,6 +177,36 @@
       searchInput?.addEventListener('input', () => { page = 1; applyFilter(); });
       load();
     })();
+  </script>
+  
+  <!-- Mobile menu functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+      const navMenu = document.querySelector('.nav-menu');
+      
+      mobileMenuToggle.addEventListener('click', function() {
+        navMenu.classList.toggle('active');
+        mobileMenuToggle.classList.toggle('active');
+      });
+      
+      // Close menu when clicking on a link
+      const navLinks = document.querySelectorAll('.nav-menu a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          navMenu.classList.remove('active');
+          mobileMenuToggle.classList.remove('active');
+        });
+      });
+      
+      // Close menu when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.nav') && !event.target.closest('.mobile-menu-toggle')) {
+          navMenu.classList.remove('active');
+          mobileMenuToggle.classList.remove('active');
+        }
+      });
+    });
   </script>
 </body>
 </html>
