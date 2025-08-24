@@ -32,7 +32,6 @@ router.get('/admin/subscriptions', adminController.listSubscriptions);
 router.get('/admin/payments', adminController.listPayments);
 router.get('/testimonials', testimonialsController.getTestimonials);
 router.post('/subscribe', subscribeController.handleSubscribe);
-router.post('/subscribe/test-autoreply', subscribeController.testNewsletterAutoReply);
 router.get('/health/email', healthController.checkEmailHealth);
 router.post('/health/email/test', healthController.sendTestEmail);
 router.post('/payments/create-intent', paymentsController.createPaymentIntent);

@@ -1,9 +1,8 @@
 const { getPool } = require('../db/supabase-pool');
-const { sendNewsletterWelcomeEmail } = require('../services/emailService');
 
 async function handleSubscribe(req, res) {
   try {
-    const { email, name } = req.body || {};
+    const { email } = req.body || {};
     if (!email) {
       return res.status(400).json({ error: 'Email is required.' });
     }
@@ -40,14 +39,6 @@ async function handleSubscribe(req, res) {
       }
 
       console.log('New subscription created:', newSubscription);
-      
-      // Send welcome email
-      try {
-        await sendNewsletterWelcomeEmail({ email, name: name || 'Subscriber' });
-      } catch (emailErr) {
-        console.error('Newsletter welcome email error:', emailErr);
-        // Don't fail the subscription if email fails
-      }
     } else {
       console.log('Email already subscribed:', email);
     }
@@ -59,32 +50,6 @@ async function handleSubscribe(req, res) {
   }
 }
 
-async function testNewsletterAutoReply(req, res) {
-  try {
-    const { email, name } = req.body;
-    
-    if (!email) {
-      return res.status(400).json({ error: 'Email is required for testing.' });
-    }
-    
-    console.log('🧪 Testing newsletter auto-reply system...');
-    
-    await sendNewsletterWelcomeEmail({ 
-      email: email, 
-      name: name || 'Test Subscriber'
-    });
-    
-    return res.status(200).json({ 
-      success: true, 
-      message: 'Newsletter welcome email sent successfully!',
-      sentTo: email
-    });
-  } catch (err) {
-    console.error('Newsletter auto-reply test error:', err);
-    return res.status(500).json({ error: 'Failed to send test newsletter welcome email' });
-  }
-}
-
-module.exports = { handleSubscribe, testNewsletterAutoReply };
+module.exports = { handleSubscribe };
 
 
