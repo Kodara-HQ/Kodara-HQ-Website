@@ -1,222 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Auto-Reply System - Kodara-HQ</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            color: #007bff;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e5e9;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-        
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.3s ease;
-        }
-        
-        button:hover {
-            background: #0056b3;
-        }
-        
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 6px;
-            display: none;
-        }
-        
-        .success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Test Auto-Reply System | Kodara-HQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
 </head>
 <body>
-    <div class="container">
-        <h1>🧪 Test Auto-Reply System</h1>
-        
-        <div class="info">
-            <strong>What this does:</strong> Tests the automatic email reply system that triggers when someone submits a contact form. 
-            This simulates what happens when a real contact form is submitted.
+  <header class="site-header">
+    <div class="container nav">
+      <div class="logo">
+        <a href="/">
+          <img src="/image/Kodara logo.png" alt="Kodara-HQ logo" />
+        </a>
+      </div>
+      
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle mobile menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/services.html">Services</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/testimonials.html">Testimonials</a>
+        <a href="/intake.html">Intake</a>
+        <a href="/contact.html" class="contact-btn">Contact</a>
+      </nav>
+      
+      <!-- Mobile Navigation -->
+      <nav class="mobile-nav" id="mobileNav">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/services.html">Services</a>
+        <a href="/portfolio.html">Portfolio</a>
+        <a href="/testimonials.html">Testimonials</a>
+        <a href="/intake.html">Intake</a>
+        <a href="/contact.html" class="contact-btn">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Test Auto-Reply System</h1>
+        <p class="lead">Test the automatic email responses for contact forms and newsletter subscriptions.</p>
+      </div>
+      <div class="hero-bg" aria-hidden="true"></div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="grid-2">
+          <!-- Contact Form Auto-Reply Test -->
+          <div class="section-panel">
+            <h2>Test Contact Form Auto-Reply</h2>
+            <p>Send a test contact form submission to receive an automatic response.</p>
+            
+            <form id="contactTestForm" class="contact-form">
+              <div class="form-group">
+                <label for="testName" class="form-label">Name *</label>
+                <input type="text" id="testName" name="name" class="form-input" value="Test User" required />
+              </div>
+              
+              <div class="form-group">
+                <label for="testEmail" class="form-label">Email Address *</label>
+                <input type="email" id="testEmail" name="email" class="form-input" placeholder="your-email@example.com" required />
+              </div>
+              
+              <div class="form-group">
+                <label for="testMessage" class="form-label">Message *</label>
+                <textarea id="testMessage" name="message" class="form-textarea" rows="4" placeholder="This is a test message to verify the auto-reply system..." required>This is a test message to verify the auto-reply system is working correctly.</textarea>
+              </div>
+              
+              <div class="form-group">
+                <label for="testService" class="form-label">Service Interest</label>
+                <select id="testService" name="service" class="form-select">
+                  <option value="">Select a service</option>
+                  <option value="Web Development">Web Development</option>
+                  <option value="App Development">App Development</option>
+                  <option value="Software Solutions">Software Solutions</option>
+                  <option value="Consultation">Consultation</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <button type="submit" class="btn btn-lg">Test Contact Auto-Reply</button>
+              </div>
+              
+              <div id="contactTestStatus" class="form-status"></div>
+            </form>
+          </div>
+          
+          <!-- Newsletter Auto-Reply Test -->
+          <div class="section-panel">
+            <h2>Test Newsletter Auto-Reply</h2>
+            <p>Subscribe to the newsletter to receive a welcome email.</p>
+            
+            <form id="newsletterTestForm" class="contact-form">
+              <div class="form-group">
+                <label for="newsletterName" class="form-label">Name</label>
+                <input type="text" id="newsletterName" name="name" class="form-input" value="Test Subscriber" />
+              </div>
+              
+              <div class="form-group">
+                <label for="newsletterEmail" class="form-label">Email Address *</label>
+                <input type="email" id="newsletterEmail" name="email" class="form-input" placeholder="your-email@example.com" required />
+              </div>
+              
+              <div class="form-group">
+                <button type="submit" class="btn btn-lg">Test Newsletter Auto-Reply</button>
+              </div>
+              
+              <div id="newsletterTestStatus" class="form-status"></div>
+            </form>
+          </div>
         </div>
         
-        <form id="testForm">
-            <div class="form-group">
-                <label for="email">Your Email Address *</label>
-                <input type="email" id="email" name="email" required placeholder="Enter your email to receive the test auto-reply">
-            </div>
-            
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" placeholder="Your name (optional)">
-            </div>
-            
-            <div class="form-group">
-                <label for="enquiryType">Enquiry Type</label>
-                <select id="enquiryType" name="enquiryType">
-                    <option value="general">General Inquiry</option>
-                    <option value="urgent">Urgent Request</option>
-                    <option value="quote">Quote Request</option>
-                    <option value="support">Technical Support</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="service">Service Interest</label>
-                <select id="service" name="service">
-                    <option value="Web Development">Web Development</option>
-                    <option value="App Development">App Development</option>
-                    <option value="Software Solutions">Software Solutions</option>
-                    <option value="Consulting">Consulting</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="company">Company</label>
-                <input type="text" id="company" name="company" placeholder="Your company (optional)">
-            </div>
-            
-            <button type="submit" id="submitBtn">Send Test Auto-Reply</button>
-        </form>
-        
-        <div id="result" class="result"></div>
+        <!-- Test Results -->
+        <div class="section-panel" style="margin-top: var(--space-xl);">
+          <h2>Test Results</h2>
+          <div id="testResults">
+            <p>Run tests above to see results here.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <img src="/image/Kodara logo.png" alt="Kodara-HQ" style="height: 40px; filter: brightness(0) invert(1);" />
+        </div>
+        <div class="footer-links">
+          <a href="/about.html">About</a>
+          <a href="/services.html">Services</a>
+          <a href="/portfolio.html">Portfolio</a>
+          <a href="/contact.html">Contact</a>
+        </div>
+        <div class="footer-social">
+          <p>&copy; 2024 Kodara-HQ. All rights reserved.</p>
+        </div>
+      </div>
     </div>
+  </footer>
+
+  <script>
+    // Mobile menu functionality
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileNav = document.getElementById('mobileNav');
     
-    <script>
-        document.getElementById('testForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            const resultDiv = document.getElementById('result');
-            
-            // Get form data
-            const formData = {
-                email: document.getElementById('email').value,
-                name: document.getElementById('name').value || 'Test User',
-                enquiryType: document.getElementById('enquiryType').value,
-                service: document.getElementById('service').value,
-                company: document.getElementById('company').value || 'Test Company'
-            };
-            
-            // Disable button and show loading
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
-            resultDiv.style.display = 'none';
-            
-            try {
-                const response = await fetch('/api/contact/test-autoreply', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    resultDiv.className = 'result success';
-                    resultDiv.innerHTML = `
-                        <strong>✅ Success!</strong><br>
-                        ${data.message}<br>
-                        <strong>Sent to:</strong> ${data.sentTo}<br>
-                        <br>
-                        <em>Check your email inbox (and spam folder) for the auto-reply message.</em>
-                    `;
-                } else {
-                    resultDiv.className = 'result error';
-                    resultDiv.innerHTML = `
-                        <strong>❌ Error:</strong><br>
-                        ${data.error || 'Failed to send test auto-reply'}
-                    `;
-                }
-            } catch (error) {
-                resultDiv.className = 'result error';
-                resultDiv.innerHTML = `
-                    <strong>❌ Network Error:</strong><br>
-                    ${error.message}
-                `;
-            } finally {
-                // Re-enable button
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Send Test Auto-Reply';
-                resultDiv.style.display = 'block';
-            }
+    mobileMenuToggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      mobileNav.classList.toggle('active');
+    });
+    
+    // Close mobile menu when clicking on a link
+    const mobileLinks = mobileNav.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenuToggle.classList.remove('active');
+        mobileNav.classList.remove('active');
+      });
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!mobileMenuToggle.contains(event.target) && !mobileNav.contains(event.target)) {
+        mobileMenuToggle.classList.remove('active');
+        mobileNav.classList.remove('active');
+      }
+    });
+
+    // Contact form auto-reply test
+    const contactTestForm = document.getElementById('contactTestForm');
+    const contactTestStatus = document.getElementById('contactTestStatus');
+
+    contactTestForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      
+      // Show loading state
+      submitBtn.textContent = 'Sending...';
+      submitBtn.disabled = true;
+      
+      try {
+        const formData = new FormData(this);
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(Object.fromEntries(formData)),
         });
-    </script>
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          contactTestStatus.innerHTML = '<div class="status success">✅ Contact form submitted successfully! Check your email for the auto-reply.</div>';
+          addTestResult('Contact Form', '✅ Success', 'Form submitted and auto-reply sent');
+        } else {
+          contactTestStatus.innerHTML = `<div class="status error">❌ ${result.message || 'Something went wrong. Please try again.'}</div>`;
+          addTestResult('Contact Form', '❌ Failed', result.message || 'Unknown error');
+        }
+      } catch (error) {
+        contactTestStatus.innerHTML = '<div class="status error">❌ Network error. Please check your connection and try again.</div>';
+        addTestResult('Contact Form', '❌ Failed', 'Network error');
+      } finally {
+        // Reset button state
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Newsletter auto-reply test
+    const newsletterTestForm = document.getElementById('newsletterTestForm');
+    const newsletterTestStatus = document.getElementById('newsletterTestStatus');
+
+    newsletterTestForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      
+      // Show loading state
+      submitBtn.textContent = 'Sending...';
+      submitBtn.disabled = true;
+      
+      try {
+        const formData = new FormData(this);
+        const response = await fetch('/api/subscribe/test-autoreply', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(Object.fromEntries(formData)),
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          newsletterTestStatus.innerHTML = '<div class="status success">✅ Newsletter welcome email sent successfully! Check your email.</div>';
+          addTestResult('Newsletter', '✅ Success', 'Welcome email sent');
+        } else {
+          newsletterTestStatus.innerHTML = `<div class="status error">❌ ${result.message || 'Something went wrong. Please try again.'}</div>`;
+          addTestResult('Newsletter', '❌ Failed', result.message || 'Unknown error');
+        }
+      } catch (error) {
+        newsletterTestStatus.innerHTML = '<div class="status error">❌ Network error. Please check your connection and try again.</div>';
+        addTestResult('Newsletter', '❌ Failed', 'Network error');
+      } finally {
+        // Reset button state
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Function to add test results
+    function addTestResult(testType, status, message) {
+      const testResults = document.getElementById('testResults');
+      const timestamp = new Date().toLocaleTimeString();
+      
+      const resultDiv = document.createElement('div');
+      resultDiv.style.cssText = `
+        padding: var(--space-md);
+        margin: var(--space-sm) 0;
+        border-radius: 8px;
+        border-left: 4px solid ${status.includes('✅') ? '#4caf50' : '#f44336'};
+        background: ${status.includes('✅') ? '#e8f5e8' : '#ffebee'};
+      `;
+      
+      resultDiv.innerHTML = `
+        <strong>${testType}</strong> - ${status}<br>
+        <small>${message}</small><br>
+        <small style="color: #666;">${timestamp}</small>
+      `;
+      
+      testResults.appendChild(resultDiv);
+      
+      // Keep only last 10 results
+      const results = testResults.querySelectorAll('div');
+      if (results.length > 10) {
+        results[0].remove();
+      }
+    }
+  </script>
 </body>
 </html>

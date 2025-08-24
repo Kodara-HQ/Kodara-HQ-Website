@@ -144,6 +144,103 @@ This is an automated response. For urgent matters, contact us at admin@kodara-hq
   }
 }
 
+async function sendNewsletterWelcomeEmail({ email, name }) {
+  const enabled = (process.env.NEWSLETTER_AUTOREPLY_ENABLED || 'true') === 'true';
+  if (!enabled) return;
+  
+  try {
+    const transporter = createTransport();
+    const from = process.env.CONTACT_FROM_EMAIL || process.env.SMTP_USER;
+    const subject = process.env.NEWSLETTER_WELCOME_SUBJECT || 'Welcome to Kodara-HQ Newsletter!';
+    
+    const welcomeMessage = process.env.NEWSLETTER_WELCOME_MESSAGE || 
+      'Thank you for subscribing to our newsletter! You\'ll now receive updates about our latest projects, industry insights, and tech tips.';
+    
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; padding: 20px; border-radius: 8px; text-align: center;">
+          <h1 style="margin: 0; font-size: 24px;">Kodara-HQ</h1>
+          <p style="margin: 10px 0 0 0; opacity: 0.9;">Innovating the Future with Code</p>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">
+          <h2 style="color: #333; margin-top: 0;">Welcome to the Family! 🎉</h2>
+          
+          <p style="color: #555; line-height: 1.6;">${welcomeMessage}</p>
+          
+          <div style="background: #e8f5e8; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #4caf50;">
+            <p style="margin: 0; color: #2e7d32; font-weight: 500;">
+              <strong>What you'll receive:</strong><br>
+              • Latest project updates and case studies<br>
+              • Industry insights and tech trends<br>
+              • Exclusive tips and best practices<br>
+              • Early access to new services
+            </p>
+          </div>
+          
+          <div style="background: #fff3cd; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #ffc107;">
+            <p style="margin: 0; color: #856404; font-weight: 500;">
+              <strong>Stay connected:</strong><br>
+              • Follow us on social media for real-time updates<br>
+              • Check out our latest projects at kodara-hq.org<br>
+              • Contact us anytime for project inquiries
+            </p>
+          </div>
+          
+          <p style="color: #555; line-height: 1.6;">
+            We're excited to have you on board!<br>
+            <strong>The Kodara-HQ Team</strong>
+          </p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; padding: 20px; background: #f1f3f4; border-radius: 8px;">
+          <p style="margin: 0; color: #666; font-size: 14px;">
+            This is an automated welcome email. You can unsubscribe anytime by replying with "UNSUBSCRIBE".<br>
+            For questions, contact us at admin@kodara-hq.org
+          </p>
+        </div>
+      </div>
+    `;
+    
+    const text = `
+Welcome to the Family! 🎉
+
+${welcomeMessage}
+
+What you'll receive:
+• Latest project updates and case studies
+• Industry insights and tech trends
+• Exclusive tips and best practices
+• Early access to new services
+
+Stay connected:
+• Follow us on social media for real-time updates
+• Check out our latest projects at kodara-hq.org
+• Contact us anytime for project inquiries
+
+We're excited to have you on board!
+The Kodara-HQ Team
+
+---
+This is an automated welcome email. You can unsubscribe anytime by replying with "UNSUBSCRIBE".
+For questions, contact us at admin@kodara-hq.org
+    `;
+    
+    await transporter.sendMail({ 
+      from, 
+      to: email, 
+      subject, 
+      html, 
+      text: text.trim() 
+    });
+    
+    console.log(`✅ Newsletter welcome email sent to ${email}`);
+  } catch (error) {
+    console.error(`❌ Failed to send newsletter welcome email to ${email}:`, error);
+    // Don't throw error - welcome email failure shouldn't break the subscription
+  }
+}
+
 async function sendPasswordResetEmail(toEmail, link) {
   const transporter = await getTransporter();
   const mailOptions = {
@@ -174,6 +271,13 @@ async function sendTestEmail(to) {
   await transporter.sendMail({ from, to, subject, text });
 }
 
-module.exports = { sendContactNotification, sendContactAutoReply, verifySmtp, sendTestEmail, sendPasswordResetEmail };
+module.exports = { 
+  sendContactNotification, 
+  sendContactAutoReply, 
+  sendNewsletterWelcomeEmail,
+  verifySmtp, 
+  sendTestEmail, 
+  sendPasswordResetEmail 
+};
 
 
