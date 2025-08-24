@@ -52,9 +52,10 @@ app.use((req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   // eslint-disable-next-line no-console
   console.log(`Kodara-HQ server running on http://localhost:${PORT}`);
+  console.log(`Server also accessible on http://127.0.0.1:${PORT}`);
 });
 
 

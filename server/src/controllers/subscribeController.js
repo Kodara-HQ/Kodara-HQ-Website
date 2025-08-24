@@ -1,4 +1,4 @@
-const { getPool, sql } = require('../db/pool');
+const { getPool } = require('../db/supabase-pool');
 
 async function handleSubscribe(req, res) {
   try {
@@ -7,22 +7,45 @@ async function handleSubscribe(req, res) {
       return res.status(400).json({ error: 'Email is required.' });
     }
 
-    const pool = await getPool();
-    const request = pool.request();
-    request.input('email', sql.NVarChar(255), email);
+    const supabase = getPool();
+    
+    // Check if email already exists
+    const { data: existingSubscription, error: checkError } = await supabase
+      .from('subscriptions')
+      .select('id')
+      .eq('email', email)
+      .single();
 
-    await request.query(`
-      IF NOT EXISTS (SELECT 1 FROM Subscriptions WHERE email = @email)
-      BEGIN
-        INSERT INTO Subscriptions (email, dateSubscribed)
-        VALUES (@email, SYSDATETIMEOFFSET())
-      END
-    `);
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('Error checking existing subscription:', checkError);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    // If email doesn't exist, insert new subscription
+    if (!existingSubscription) {
+      const { data: newSubscription, error: insertError } = await supabase
+        .from('subscriptions')
+        .insert([
+          { 
+            email: email,
+            date_subscribed: new Date().toISOString()
+          }
+        ])
+        .select();
+
+      if (insertError) {
+        console.error('Error inserting subscription:', insertError);
+        return res.status(500).json({ error: 'Internal Server Error' });
+      }
+
+      console.log('New subscription created:', newSubscription);
+    } else {
+      console.log('Email already subscribed:', email);
+    }
 
     return res.status(201).json({ success: true });
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err);
+    console.error('Subscription error:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }

@@ -1,15 +1,21 @@
-const { getPool, sql } = require('../db/pool');
+const { getPool } = require('../db/supabase-pool');
 
 async function getProjects(req, res) {
   try {
-    const pool = await getPool();
-    const result = await pool
-      .request()
-      .query('SELECT id, title, description, imageURL, link FROM Projects ORDER BY id DESC');
-    return res.json(result.recordset || []);
+    const supabase = getPool();
+    const { data: projects, error } = await supabase
+      .from('projects')
+      .select('id, title, description, image_url, link')
+      .order('id', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching projects:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    return res.json(projects || []);
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err);
+    console.error('Projects error:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
@@ -17,22 +23,29 @@ async function getProjects(req, res) {
 async function createProject(req, res) {
   const { title, description, imageURL, link } = req.body || {};
   if (!title) return res.status(400).json({ error: 'Title is required' });
+  
   try {
-    const pool = await getPool();
-    const result = await pool.request()
-      .input('title', sql.NVarChar(255), title)
-      .input('description', sql.NVarChar(sql.MAX), description || null)
-      .input('imageURL', sql.NVarChar(1024), imageURL || null)
-      .input('link', sql.NVarChar(1024), link || null)
-      .query(`
-        INSERT INTO Projects (title, description, imageURL, link)
-        OUTPUT INSERTED.id, INSERTED.title, INSERTED.description, INSERTED.imageURL, INSERTED.link
-        VALUES (@title, @description, @imageURL, @link)
-      `);
-    return res.status(201).json(result.recordset?.[0] || { ok: true });
+    const supabase = getPool();
+    const { data: newProject, error } = await supabase
+      .from('projects')
+      .insert([
+        {
+          title: title,
+          description: description || null,
+          image_url: imageURL || null,
+          link: link || null
+        }
+      ])
+      .select();
+
+    if (error) {
+      console.error('Error creating project:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+    return res.status(201).json(newProject?.[0] || { ok: true });
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err);
+    console.error('Create project error:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
@@ -41,27 +54,28 @@ async function updateProject(req, res) {
   const { id } = req.params;
   const { title, description, imageURL, link } = req.body || {};
   if (!id) return res.status(400).json({ error: 'Missing id' });
+  
   try {
-    const pool = await getPool();
-    const request = pool.request()
-      .input('id', sql.Int, Number(id))
-      .input('title', sql.NVarChar(255), title || null)
-      .input('description', sql.NVarChar(sql.MAX), description || null)
-      .input('imageURL', sql.NVarChar(1024), imageURL || null)
-      .input('link', sql.NVarChar(1024), link || null);
-    await request.query(`
-      UPDATE Projects
-      SET
-        title = COALESCE(@title, title),
-        description = COALESCE(@description, description),
-        imageURL = COALESCE(@imageURL, imageURL),
-        link = COALESCE(@link, link)
-      WHERE id = @id
-    `);
+    const supabase = getPool();
+    const { data: updatedProject, error } = await supabase
+      .from('projects')
+      .update({
+        title: title || undefined,
+        description: description || undefined,
+        image_url: imageURL || undefined,
+        link: link || undefined
+      })
+      .eq('id', id)
+      .select();
+
+    if (error) {
+      console.error('Error updating project:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
     return res.json({ ok: true });
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err);
+    console.error('Update project error:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
@@ -69,13 +83,22 @@ async function updateProject(req, res) {
 async function deleteProject(req, res) {
   const { id } = req.params;
   if (!id) return res.status(400).json({ error: 'Missing id' });
+  
   try {
-    const pool = await getPool();
-    await pool.request().input('id', sql.Int, Number(id)).query('DELETE FROM Projects WHERE id = @id');
+    const supabase = getPool();
+    const { error } = await supabase
+      .from('projects')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting project:', error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+
     return res.json({ ok: true });
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error(err);
+    console.error('Delete project error:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
