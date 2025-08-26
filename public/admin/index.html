@@ -3,19 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kodara Admin</title>
+  <title>Kodara-HQ Admin Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/styles.css" />
-  <style>
-    .admin { padding-top: 90px; }
-    .admin .grid { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
-    .card table { width: 100%; border-collapse: collapse; }
-    .card th, .card td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #e2e8f0; }
-    .muted { color: #64748b; }
-    .row { display: flex; gap: 10px; }
-  </style>
   <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
   <link rel="apple-touch-icon" href="/image/Kodara logo1.png" />
 </head>
@@ -25,6 +17,7 @@
       <div class="logo"><a href="/"><img src="/image/Kodara logo.png" alt="Kodara-HQ logo" /></a></div>
       <nav>
         <a href="/">Public Site</a>
+        <a href="/admin" class="active">Admin Dashboard</a>
       </nav>
     </div>
   </header>
@@ -37,46 +30,200 @@
             <aside class="card" id="sidebar">
               <h3>🚀 Admin Dashboard</h3>
               <p class="muted" id="whoami">Welcome to Kodara-HQ Admin</p>
-              <nav class="stack" style="margin-top:10px; display: flex; flex-direction: column; gap: 8px;">
+              
+              <!-- Dashboard Overview -->
+              <div class="dashboard-stats">
+                <div class="stat-item">
+                  <span class="stat-number" id="totalContacts">-</span>
+                  <span class="stat-label">Contacts</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number" id="totalSubscriptions">-</span>
+                  <span class="stat-label">Subscriptions</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number" id="totalPayments">-</span>
+                  <span class="stat-label">Payments</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number" id="totalProjects">-</span>
+                  <span class="stat-label">Projects</span>
+                </div>
+              </div>
+
+              <nav class="stack" style="margin-top:20px; display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn btn-secondary" data-tab="overview" style="text-align: left; justify-content: flex-start;">📊 Overview</button>
                 <button class="btn btn-secondary" data-tab="projects" style="text-align: left; justify-content: flex-start;">📁 Projects</button>
                 <button class="btn btn-secondary" data-tab="contacts" style="text-align: left; justify-content: flex-start;">📧 Contacts</button>
                 <button class="btn btn-secondary" data-tab="subscriptions" style="text-align: left; justify-content: flex-start;">📋 Subscriptions</button>
                 <button class="btn btn-secondary" data-tab="payments" style="text-align: left; justify-content: flex-start;">💳 Payments</button>
+                <button class="btn btn-secondary" data-tab="testimonials" style="text-align: left; justify-content: flex-start;">⭐ Testimonials</button>
+                <button class="btn btn-secondary" data-tab="users" style="text-align: left; justify-content: flex-start;">👥 Users</button>
               </nav>
             </aside>
 
             <section id="content">
-              <div class="card panel" id="projectsCard">
+              <!-- Overview Dashboard -->
+              <div class="card panel" id="overviewCard">
+                <h3>📊 Dashboard Overview</h3>
+                <div class="overview-grid">
+                  <div class="overview-card">
+                    <h4>Recent Activity</h4>
+                    <div id="recentActivity" class="activity-list">
+                      <p>Loading recent activity...</p>
+                    </div>
+                  </div>
+                  <div class="overview-card">
+                    <h4>Quick Actions</h4>
+                    <div class="quick-actions">
+                      <button class="btn btn-sm" onclick="switchTab('projects')">Add Project</button>
+                      <button class="btn btn-sm" onclick="exportData()">Export Data</button>
+                      <button class="btn btn-sm" onclick="refreshAll()">Refresh All</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Projects Management -->
+              <div class="card panel" id="projectsCard" style="display:none">
                 <h3>📁 Project Management</h3>
                 <form id="newProject" class="stack">
-                  <label>Project Title<input name="title" required placeholder="Enter project title..." /></label>
+                  <div class="form-row">
+                    <label>Project Title<input name="title" required placeholder="Enter project title..." /></label>
+                    <label>Image URL<input name="imageURL" placeholder="/image/example.png or https://..." /></label>
+                  </div>
                   <label>Description<textarea name="description" placeholder="Describe your project..."></textarea></label>
-                  <label>Image URL<input name="imageURL" placeholder="/image/example.png or https://..." /></label>
                   <label>Project Link<input name="link" placeholder="https://... or /" /></label>
-                  <button class="btn" type="submit">✨ Add Project</button>
+                  <div class="form-actions">
+                    <button class="btn" type="submit">✨ Add Project</button>
+                    <button class="btn btn-secondary" type="button" onclick="this.form.reset()">Clear Form</button>
+                  </div>
                   <p id="createStatus" class="status"></p>
                 </form>
                 <div class="divider"></div>
+                <div class="table-controls">
+                  <input type="text" id="projectSearch" class="search-input" placeholder="Search projects..." />
+                  <select id="projectFilter" class="filter-select">
+                    <option value="">All Projects</option>
+                    <option value="web">Web Development</option>
+                    <option value="mobile">Mobile Apps</option>
+                    <option value="design">Design</option>
+                  </select>
+                </div>
                 <table id="projectsTable" class="table"></table>
                 <p id="projectsStatus" class="status"></p>
               </div>
 
+              <!-- Contact Messages -->
               <div class="card panel" id="contactsCard" style="display:none">
                 <h3>📧 Contact Messages</h3>
+                <div class="table-controls">
+                  <input type="text" id="contactSearch" class="search-input" placeholder="Search contacts..." />
+                  <select id="contactFilter" class="filter-select">
+                    <option value="">All Services</option>
+                    <option value="web-development">Web Development</option>
+                    <option value="mobile-development">Mobile Development</option>
+                    <option value="design">Design</option>
+                    <option value="consulting">Consulting</option>
+                  </select>
+                  <input type="date" id="contactDateFilter" class="date-input" />
+                </div>
                 <table id="contactsTable" class="table"></table>
                 <p id="contactsStatus" class="status"></p>
               </div>
 
+              <!-- Email Subscriptions -->
               <div class="card panel" id="subscriptionsCard" style="display:none">
                 <h3>📋 Email Subscriptions</h3>
+                <div class="table-controls">
+                  <input type="text" id="subscriptionSearch" class="search-input" placeholder="Search emails..." />
+                  <input type="date" id="subscriptionDateFilter" class="date-input" />
+                </div>
+                <div class="bulk-actions">
+                  <button class="btn btn-sm" onclick="exportSubscriptions()">Export CSV</button>
+                  <button class="btn btn-sm btn-secondary" onclick="refreshSubscriptions()">Refresh</button>
+                </div>
                 <table id="subscriptionsTable" class="table"></table>
                 <p id="subscriptionsStatus" class="status"></p>
               </div>
 
+              <!-- Payment Records -->
               <div class="card panel" id="paymentsCard" style="display:none">
                 <h3>💳 Payment Records</h3>
+                <div class="table-controls">
+                  <input type="text" id="paymentSearch" class="search-input" placeholder="Search payments..." />
+                  <select id="paymentStatusFilter" class="filter-select">
+                    <option value="">All Statuses</option>
+                    <option value="succeeded">Succeeded</option>
+                    <option value="pending">Pending</option>
+                    <option value="failed">Failed</option>
+                    <option value="canceled">Canceled</option>
+                  </select>
+                  <input type="date" id="paymentDateFilter" class="date-input" />
+                </div>
+                <div class="chart-container">
+                  <h4>Payment Analytics</h4>
+                  <div id="paymentChart" class="chart-placeholder">
+                    <div class="chart-summary">
+                      <div class="summary-item">
+                        <div class="stat-number" id="totalRevenue">$0</div>
+                        <div class="stat-label">Total Revenue</div>
+                      </div>
+                      <div class="summary-item">
+                        <div class="stat-number" id="avgPayment">$0</div>
+                        <div class="stat-label">Avg Payment</div>
+                      </div>
+                      <div class="summary-item">
+                        <div class="stat-number" id="successRate">0%</div>
+                        <div class="stat-label">Success Rate</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <table id="paymentsTable" class="table"></table>
                 <p id="paymentsStatus" class="status"></p>
+              </div>
+
+              <!-- Testimonials Management -->
+              <div class="card panel" id="testimonialsCard" style="display:none">
+                <h3>⭐ Testimonials Management</h3>
+                <form id="newTestimonial" class="stack">
+                  <div class="form-row">
+                    <label>Client Name<input name="clientName" required placeholder="Enter client name..." /></label>
+                    <label>Rating<select name="rating" required>
+                      <option value="">Select rating</option>
+                      <option value="5">5 Stars ⭐⭐⭐⭐⭐</option>
+                      <option value="4">4 Stars ⭐⭐⭐⭐</option>
+                      <option value="3">3 Stars ⭐⭐⭐</option>
+                      <option value="2">2 Stars ⭐⭐</option>
+                      <option value="1">1 Star ⭐</option>
+                    </select></label>
+                  </div>
+                  <label>Feedback<textarea name="feedback" required placeholder="Enter client feedback..."></textarea></label>
+                  <div class="form-actions">
+                    <button class="btn" type="submit">✨ Add Testimonial</button>
+                    <button class="btn btn-secondary" type="button" onclick="this.form.reset()">Clear Form</button>
+                  </div>
+                  <p id="testimonialStatus" class="status"></p>
+                </form>
+                <div class="divider"></div>
+                <table id="testimonialsTable" class="table"></table>
+                <p id="testimonialsTableStatus" class="status"></p>
+              </div>
+
+              <!-- Users Management -->
+              <div class="card panel" id="usersCard" style="display:none">
+                <h3>👥 Users Management</h3>
+                <div class="table-controls">
+                  <input type="text" id="userSearch" class="search-input" placeholder="Search users..." />
+                  <select id="userRoleFilter" class="filter-select">
+                    <option value="">All Roles</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                  </select>
+                </div>
+                <table id="usersTable" class="table"></table>
+                <p id="usersStatus" class="status"></p>
               </div>
             </section>
           </div>
@@ -90,6 +237,13 @@
     const whoami = document.getElementById('whoami');
     const adminApp = document.getElementById('adminApp');
 
+    // Dashboard stats elements
+    const totalContacts = document.getElementById('totalContacts');
+    const totalSubscriptions = document.getElementById('totalSubscriptions');
+    const totalPayments = document.getElementById('totalPayments');
+    const totalProjects = document.getElementById('totalProjects');
+
+    // Table elements
     const projectsTable = document.getElementById('projectsTable');
     const projectsStatus = document.getElementById('projectsStatus');
     const newProject = document.getElementById('newProject');
@@ -101,23 +255,36 @@
     const subscriptionsStatus = document.getElementById('subscriptionsStatus');
     const paymentsTable = document.getElementById('paymentsTable');
     const paymentsStatus = document.getElementById('paymentsStatus');
+    const testimonialsTable = document.getElementById('testimonialsTable');
+    const testimonialsTableStatus = document.getElementById('testimonialsTableStatus');
+    const usersTable = document.getElementById('usersTable');
+    const usersStatus = document.getElementById('usersStatus');
+
+    // Chart elements
+    const totalRevenue = document.getElementById('totalRevenue');
+    const avgPayment = document.getElementById('avgPayment');
+    const successRate = document.getElementById('successRate');
 
     function showDashboard(){
       adminApp.style.display = 'block';
-      switchTab('projects');
+      switchTab('overview');
     }
 
     function switchTab(tab){
-      const ids = ['projects','contacts','subscriptions','payments'];
+      const ids = ['overview','projects','contacts','subscriptions','payments','testimonials','users'];
       ids.forEach(id => {
         const el = document.getElementById(id + 'Card');
         if (!el) return;
         el.style.display = (id === tab) ? 'block' : 'none';
       });
+      
+      if (tab === 'overview') loadOverview();
       if (tab === 'projects') loadProjects();
       if (tab === 'contacts') loadContacts();
       if (tab === 'subscriptions') loadSubscriptions();
       if (tab === 'payments') loadPayments();
+      if (tab === 'testimonials') loadTestimonials();
+      if (tab === 'users') loadUsers();
     }
 
     document.getElementById('sidebar').addEventListener('click', (e)=>{
@@ -125,17 +292,95 @@
       switchTab(btn.getAttribute('data-tab'));
     });
 
-    
-
     async function handleAuthFailureIfNeeded(response){
       if (response && (response.status === 401 || response.status === 403)) {
         token = '';
-        // Auth is disabled; show dashboard
         showDashboard();
         throw new Error('Unauthorized');
       }
     }
 
+    // Load Overview Dashboard
+    async function loadOverview() {
+      try {
+        await Promise.all([
+          loadDashboardStats(),
+          loadRecentActivity()
+        ]);
+      } catch (error) {
+        console.error('Error loading overview:', error);
+      }
+    }
+
+    // Load Dashboard Statistics
+    async function loadDashboardStats() {
+      try {
+        const [contacts, subscriptions, payments, projects] = await Promise.all([
+          fetch('/api/admin/contacts').then(r => r.json()),
+          fetch('/api/admin/subscriptions').then(r => r.json()),
+          fetch('/api/admin/payments').then(r => r.json()),
+          fetch('/api/admin/projects').then(r => r.json())
+        ]);
+
+        totalContacts.textContent = contacts.length || 0;
+        totalSubscriptions.textContent = subscriptions.length || 0;
+        totalPayments.textContent = payments.length || 0;
+        totalProjects.textContent = projects.length || 0;
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+
+    // Load Recent Activity
+    async function loadRecentActivity() {
+      try {
+        const recentActivity = document.getElementById('recentActivity');
+        const [contacts, payments, subscriptions] = await Promise.all([
+          fetch('/api/admin/contacts').then(r => r.json()),
+          fetch('/api/admin/payments').then(r => r.json()),
+          fetch('/api/admin/subscriptions').then(r => r.json())
+        ]);
+
+        // Combine and sort by date
+        const allActivity = [
+          ...contacts.map(c => ({ type: 'contact', data: c, date: new Date(c.dateSubmitted) })),
+          ...payments.map(p => ({ type: 'payment', data: p, date: new Date(p.dateCreated) })),
+          ...subscriptions.map(s => ({ type: 'subscription', data: s, date: new Date(s.dateSubscribed) }))
+        ].sort((a, b) => b.date - a.date).slice(0, 10);
+
+        const activityHTML = allActivity.map(activity => {
+          const date = activity.date.toLocaleDateString();
+          const time = activity.date.toLocaleTimeString();
+          
+          switch(activity.type) {
+            case 'contact':
+              return `<div class="activity-item">
+                <span class="activity-icon">📧</span>
+                <span class="activity-text">New contact from ${activity.data.name}</span>
+                <span class="activity-time">${date} ${time}</span>
+              </div>`;
+            case 'payment':
+              return `<div class="activity-item">
+                <span class="activity-icon">💳</span>
+                <span class="activity-text">Payment ${activity.data.status} - $${activity.data.agreed || activity.data.depositAmount}</span>
+                <span class="activity-time">${date} ${time}</span>
+              </div>`;
+            case 'subscription':
+              return `<div class="activity-item">
+                <span class="activity-icon">📋</span>
+                <span class="activity-text">New newsletter subscription</span>
+                <span class="activity-time">${date} ${time}</span>
+              </div>`;
+          }
+        }).join('');
+
+        recentActivity.innerHTML = activityHTML || '<p>No recent activity</p>';
+      } catch (error) {
+        console.error('Error loading activity:', error);
+      }
+    }
+
+    // Load Projects
     async function loadProjects(){
       projectsStatus.textContent = 'Loading...';
       try {
@@ -143,12 +388,148 @@
         await handleAuthFailureIfNeeded(res);
         const items = await res.json();
         if (!res.ok) throw new Error(items.error || 'Failed to load');
-        projectsTable.innerHTML = '<tr><th>Title</th><th>Link</th><th>Image</th><th></th></tr>' +
-          items.map(p => `<tr><td>${p.title}</td><td>${p.link||''}</td><td>${p.imageURL||''}</td><td><button data-id="${p.id}" class="del btn btn-secondary">Delete</button></td></tr>`).join('');
+        
+        const header = '<tr><th>Title</th><th>Description</th><th>Link</th><th>Image</th><th>Created</th><th>Actions</th></tr>';
+        projectsTable.innerHTML = header + items.map(p => `
+          <tr>
+            <td><strong>${p.title || ''}</strong></td>
+            <td class="clamp-2">${p.description || ''}</td>
+            <td><a href="${p.link || '#'}" target="_blank" class="link-preview">${p.link || 'N/A'}</a></td>
+            <td>${p.imageURL ? `<img src="${p.imageURL}" alt="${p.title}" class="thumbnail" />` : 'N/A'}</td>
+            <td>${p.created_at ? new Date(p.created_at).toLocaleDateString() : 'N/A'}</td>
+            <td><button data-id="${p.id}" class="del btn btn-sm">Delete</button></td>
+          </tr>`).join('');
         projectsStatus.textContent = '';
       } catch(err){ projectsStatus.textContent = err.message; }
     }
 
+    // Load Contacts with Enhanced Details
+    async function loadContacts(){
+      contactsStatus.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/admin/contacts');
+        await handleAuthFailureIfNeeded(res);
+        const items = await res.json();
+        if (!res.ok) throw new Error(items.error || 'Failed to load');
+        
+        const header = '<tr><th>Name</th><th>Email</th><th>Phone</th><th>Company</th><th>Service</th><th>Budget</th><th>Timeline</th><th>Type</th><th>Message</th><th>Date</th></tr>';
+        contactsTable.innerHTML = header + items.map(c => `
+          <tr>
+            <td><strong>${c.name || ''}</strong></td>
+            <td><a href="mailto:${c.email}" class="email-link">${c.email || ''}</a></td>
+            <td>${c.phone || 'N/A'}</td>
+            <td>${c.company || 'N/A'}</td>
+            <td><span class="service-badge">${c.service || 'N/A'}</span></td>
+            <td><span class="budget-badge">${c.budget || 'N/A'}</span></td>
+            <td><span class="timeline-badge">${c.timeline || 'N/A'}</span></td>
+            <td><span class="category-badge">${c.enquiryType || 'N/A'}</span></td>
+            <td class="message-content">${c.message || ''}</td>
+            <td>${new Date(c.dateSubmitted).toLocaleString()}</td>
+          </tr>`).join('');
+        contactsStatus.textContent = '';
+      } catch(err){ contactsStatus.textContent = err.message; }
+    }
+
+    // Load Subscriptions
+    async function loadSubscriptions(){
+      subscriptionsStatus.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/admin/subscriptions');
+        await handleAuthFailureIfNeeded(res);
+        const items = await res.json();
+        if (!res.ok) throw new Error(items.error || 'Failed to load');
+        
+        const header = '<tr><th>Email</th><th>Date Subscribed</th><th>Actions</th></tr>';
+        subscriptionsTable.innerHTML = header + items.map(s => `
+          <tr>
+            <td><a href="mailto:${s.email}" class="email-link">${s.email}</a></td>
+            <td>${new Date(s.dateSubscribed).toLocaleString()}</td>
+            <td><button data-id="${s.id}" class="del btn btn-sm">Remove</button></td>
+          </tr>`).join('');
+        subscriptionsStatus.textContent = '';
+      } catch(err){ subscriptionsStatus.textContent = err.message; }
+    }
+
+    // Load Payments with Analytics
+    async function loadPayments(){
+      paymentsStatus.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/admin/payments');
+        await handleAuthFailureIfNeeded(res);
+        const items = await res.json();
+        if (!res.ok) throw new Error(items.error || 'Failed to load');
+        
+        // Calculate analytics
+        const successfulPayments = items.filter(p => p.status === 'succeeded');
+        const totalAmount = successfulPayments.reduce((sum, p) => sum + (parseFloat(p.agreed) || 0), 0);
+        const avgAmount = successfulPayments.length > 0 ? totalAmount / successfulPayments.length : 0;
+        const successRatePercent = items.length > 0 ? (successfulPayments.length / items.length) * 100 : 0;
+
+        totalRevenue.textContent = `$${totalAmount.toFixed(2)}`;
+        avgPayment.textContent = `$${avgAmount.toFixed(2)}`;
+        successRate.textContent = `${successRatePercent.toFixed(1)}%`;
+        
+        const header = '<tr><th>Name</th><th>Email</th><th>Project</th><th>Agreed</th><th>Deposit</th><th>Currency</th><th>Status</th><th>Date</th></tr>';
+        paymentsTable.innerHTML = header + items.map(p => `
+          <tr>
+            <td><strong>${p.name || 'N/A'}</strong></td>
+            <td><a href="mailto:${p.email}" class="email-link">${p.email || 'N/A'}</a></td>
+            <td>${p.projectRef || 'N/A'}</td>
+            <td class="amount-info">$${p.agreed || '0.00'}</td>
+            <td class="amount-info">$${p.depositAmount || '0.00'}</td>
+            <td>${p.currency}</td>
+            <td><span class="status-badge ${p.status}">${p.status}</span></td>
+            <td>${new Date(p.dateCreated).toLocaleString()}</td>
+          </tr>`).join('');
+        paymentsStatus.textContent = '';
+      } catch(err){ paymentsStatus.textContent = err.message; }
+    }
+
+    // Load Testimonials
+    async function loadTestimonials(){
+      testimonialsTableStatus.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/admin/testimonials');
+        await handleAuthFailureIfNeeded(res);
+        const items = await res.json();
+        if (!res.ok) throw new Error(items.error || 'Failed to load');
+        
+        const header = '<tr><th>Client Name</th><th>Rating</th><th>Feedback</th><th>Created</th><th>Actions</th></tr>';
+        testimonialsTable.innerHTML = header + items.map(t => `
+          <tr>
+            <td><strong>${t.clientName || ''}</strong></td>
+            <td><span class="rating">${'⭐'.repeat(t.rating)}</span></td>
+            <td class="message-content">${t.feedback || ''}</td>
+            <td>${t.created_at ? new Date(t.created_at).toLocaleDateString() : 'N/A'}</td>
+            <td><button data-id="${t.id}" class="del btn btn-sm">Delete</button></td>
+          </tr>`).join('');
+        testimonialsTableStatus.textContent = '';
+      } catch(err){ testimonialsTableStatus.textContent = err.message; }
+    }
+
+    // Load Users
+    async function loadUsers(){
+      usersStatus.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/admin/users');
+        await handleAuthFailureIfNeeded(res);
+        const items = await res.json();
+        if (!res.ok) throw new Error(items.error || 'Failed to load');
+        
+        const header = '<tr><th>Name</th><th>Email</th><th>Role</th><th>Created</th><th>Updated</th></tr>';
+        usersTable.innerHTML = header + items.map(u => `
+          <tr>
+            <td><strong>${u.name || ''}</strong></td>
+            <td><a href="mailto:${u.email}" class="email-link">${u.email || ''}</a></td>
+            <td><span class="status-badge ${u.role}">${u.role || 'user'}</span></td>
+            <td>${u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</td>
+            <td>${u.updated_at ? new Date(u.updated_at).toLocaleDateString() : 'N/A'}</td>
+          </tr>`).join('');
+        usersStatus.textContent = '';
+      } catch(err){ usersStatus.textContent = err.message; }
+    }
+
+    // Project Form Handler
     if (newProject) {
       newProject.addEventListener('submit', async (e)=>{
         e.preventDefault(); createStatus.textContent = 'Creating...';
@@ -157,85 +538,97 @@
           const res = await fetch('/api/admin/projects', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
           const payload = await res.json();
           if (!res.ok) throw new Error(payload.error || 'Failed');
-          newProject.reset(); createStatus.textContent = 'Created';
+          newProject.reset(); createStatus.textContent = 'Created successfully!';
           await loadProjects();
+          await loadDashboardStats();
         } catch(err){ createStatus.textContent = err.message; }
       });
     }
 
+    // Testimonial Form Handler
+    const newTestimonial = document.getElementById('newTestimonial');
+    if (newTestimonial) {
+      newTestimonial.addEventListener('submit', async (e)=>{
+        e.preventDefault(); 
+        const testimonialStatus = document.getElementById('testimonialStatus');
+        testimonialStatus.textContent = 'Creating...';
+        try {
+          const data = Object.fromEntries(new FormData(newTestimonial).entries());
+          const res = await fetch('/api/admin/testimonials', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+          const payload = await res.json();
+          if (!res.ok) throw new Error(payload.error || 'Failed');
+          newTestimonial.reset(); testimonialStatus.textContent = 'Created successfully!';
+          await loadTestimonials();
+          await loadDashboardStats();
+        } catch(err){ testimonialStatus.textContent = err.message; }
+      });
+    }
+
+    // Delete Handlers
     projectsTable.addEventListener('click', async (e)=>{
       const btn = e.target.closest('button.del'); if (!btn) return;
       const id = btn.getAttribute('data-id'); if (!id) return;
-      btn.disabled = true; btn.textContent = 'Deleting...';
-      try {
-        const res = await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
-        await handleAuthFailureIfNeeded(res);
-        const payload = await res.json(); if (!res.ok) throw new Error(payload.error || 'Failed');
-        await loadProjects();
-      } catch(err){ projectsStatus.textContent = err.message; }
+      if (confirm('Are you sure you want to delete this project?')) {
+        btn.disabled = true; btn.textContent = 'Deleting...';
+        try {
+          const res = await fetch(`/api/admin/projects/${id}`, { method: 'DELETE' });
+          await handleAuthFailureIfNeeded(res);
+          const payload = await res.json(); if (!res.ok) throw new Error(payload.error || 'Failed');
+          await loadProjects();
+          await loadDashboardStats();
+        } catch(err){ projectsStatus.textContent = err.message; }
+      }
     });
 
-    async function loadContacts(){
-      contactsStatus.textContent = 'Loading...';
-      try {
-        const res = await fetch('/api/admin/contacts');
-        await handleAuthFailureIfNeeded(res);
-        const items = await res.json();
-        if (!res.ok) throw new Error(items.error || 'Failed to load');
-        const header = '<tr><th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Budget</th><th>Timeline</th><th>Type</th><th>Date</th></tr>';
-        contactsTable.innerHTML = header + items.map(c => `
-          <tr>
-            <td>${c.name||''}</td>
-            <td>${c.email||''}</td>
-            <td>${c.phone||''}</td>
-            <td>${c.service||''}</td>
-            <td>${c.budget||''}</td>
-            <td>${c.timeline||''}</td>
-            <td>${c.enquiryType||''}</td>
-            <td>${new Date(c.dateSubmitted).toLocaleString()}</td>
-          </tr>`).join('');
-        contactsStatus.textContent = '';
-      } catch(err){ contactsStatus.textContent = err.message; }
+    testimonialsTable.addEventListener('click', async (e)=>{
+      const btn = e.target.closest('button.del'); if (!btn) return;
+      const id = btn.getAttribute('data-id'); if (!id) return;
+      if (confirm('Are you sure you want to delete this testimonial?')) {
+        btn.disabled = true; btn.textContent = 'Deleting...';
+        try {
+          const res = await fetch(`/api/admin/testimonials/${id}`, { method: 'DELETE' });
+          await handleAuthFailureIfNeeded(res);
+          const payload = await res.json(); if (!res.ok) throw new Error(payload.error || 'Failed');
+          await loadTestimonials();
+          await loadDashboardStats();
+        } catch(err){ testimonialsTableStatus.textContent = err.message; }
+      }
+    });
+
+    subscriptionsTable.addEventListener('click', async (e)=>{
+      const btn = e.target.closest('button.del'); if (!btn) return;
+      const id = btn.getAttribute('data-id'); if (!id) return;
+      if (confirm('Are you sure you want to remove this subscription?')) {
+        btn.disabled = true; btn.textContent = 'Removing...';
+        try {
+          const res = await fetch(`/api/admin/subscriptions/${id}`, { method: 'DELETE' });
+          await handleAuthFailureIfNeeded(res);
+          const payload = await res.json(); if (!res.ok) throw new Error(payload.error || 'Failed');
+          await loadSubscriptions();
+          await loadDashboardStats();
+        } catch(err){ subscriptionsStatus.textContent = err.message; }
+      }
+    });
+
+    // Utility Functions
+    function refreshAll() {
+      loadOverview();
+      loadProjects();
+      loadContacts();
+      loadSubscriptions();
+      loadPayments();
+      loadTestimonials();
+      loadUsers();
     }
 
-    async function loadSubscriptions(){
-      subscriptionsStatus.textContent = 'Loading...';
-      try {
-        const res = await fetch('/api/admin/subscriptions');
-        await handleAuthFailureIfNeeded(res);
-        const items = await res.json();
-        if (!res.ok) throw new Error(items.error || 'Failed to load');
-        const header = '<tr><th>Email</th><th>Date Subscribed</th></tr>';
-        subscriptionsTable.innerHTML = header + items.map(s => `
-          <tr>
-            <td>${s.email}</td>
-            <td>${new Date(s.dateSubscribed).toLocaleString()}</td>
-          </tr>`).join('');
-        subscriptionsStatus.textContent = '';
-      } catch(err){ subscriptionsStatus.textContent = err.message; }
+    function exportData() {
+      // Implementation for data export
+      alert('Export functionality coming soon!');
     }
 
-    async function loadPayments(){
-      paymentsStatus.textContent = 'Loading...';
-      try {
-        const res = await fetch('/api/admin/payments');
-        await handleAuthFailureIfNeeded(res);
-        const items = await res.json();
-        if (!res.ok) throw new Error(items.error || 'Failed to load');
-        const header = '<tr><th>Name</th><th>Email</th><th>Project</th><th>Agreed</th><th>Deposit</th><th>Currency</th><th>Status</th><th>Date</th></tr>';
-        paymentsTable.innerHTML = header + items.map(p => `
-          <tr>
-            <td>${p.name||''}</td>
-            <td>${p.email||''}</td>
-            <td>${p.projectRef||''}</td>
-            <td>${p.agreed ?? ''}</td>
-            <td>${p.depositAmount ?? ''}</td>
-            <td>${p.currency}</td>
-            <td>${p.status}</td>
-            <td>${new Date(p.dateCreated).toLocaleString()}</td>
-          </tr>`).join('');
-        paymentsStatus.textContent = '';
-      } catch(err){ paymentsStatus.textContent = err.message; }
+    function exportSubscriptions() {
+      // Implementation for subscription export
+      alert('Subscription export coming soon!');
     }
 
     // Auto-init dashboard
@@ -259,7 +652,7 @@
     };
 
     // Initial tab highlight
-    highlightActiveTab('projects');
+    highlightActiveTab('overview');
   </script>
 </body>
 </html>

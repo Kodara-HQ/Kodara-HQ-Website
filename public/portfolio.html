@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portfolio | Kodara-HQ</title>
+  <title>Our Portfolio | Kodara-HQ</title>
   <link rel="stylesheet" href="/css/styles.css" />
   <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
   <link rel="apple-touch-icon" href="/image/Kodara logo1.png" />
@@ -32,52 +32,235 @@
   </header>
 
   <main>
-    <section class="hero portfolio-hero with-watermark">
+    <!-- Hero Section -->
+    <section class="portfolio-hero">
       <div class="container">
-        <h1>Selected Projects</h1>
-        <p class="lead">A snapshot of products we’ve designed and built. Explore outcomes, not just deliverables.</p>
-        <div class="inline-form" style="margin-top:16px">
-          <input id="projectSearch" type="search" placeholder="Search projects by title..." />
-          <button id="clearSearch" class="btn btn-secondary" type="button">Clear</button>
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Showcasing Digital Excellence</h1>
+            <p class="hero-subtitle">Explore our portfolio of innovative projects that demonstrate our expertise in creating impactful digital solutions for businesses across various industries.</p>
+            <div class="hero-stats">
+              <div class="stat-item">
+                <div class="stat-number">150+</div>
+                <div class="stat-label">Projects Completed</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Industries Served</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Client Satisfaction</div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="portfolio-illustration">
+              <div class="floating-project project-1">
+                <div class="project-icon">📱</div>
+                <div class="project-text">Mobile Apps</div>
+              </div>
+              <div class="floating-project project-2">
+                <div class="project-icon">🌐</div>
+                <div class="project-text">Web Apps</div>
+              </div>
+              <div class="floating-project project-3">
+                <div class="project-icon">💼</div>
+                <div class="project-text">Business Solutions</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="hero-bg" aria-hidden="true"></div>
     </section>
 
-    <section class="section">
-      <div class="container section-panel">
-        <!-- Showcase Projects -->
-        <div class="grid-3" style="margin-bottom: 40px;">
-          <a href="https://restaurant-35yk.onrender.com/" target="_blank" rel="noopener noreferrer" class="card project">
-            <div class="thumb" style="background-image:url('/image/logo-Restaurant%20Hub.png'); background-size: contain; background-color: #f8fafc;"></div>
-            <div class="content">
+    <!-- Search & Filter Section -->
+    <section class="search-filter-section">
+      <div class="container">
+        <div class="search-container">
+          <div class="search-box">
+            <div class="search-icon">🔍</div>
+            <input id="projectSearch" type="search" placeholder="Search projects by title, technology, or industry..." />
+            <button id="clearSearch" class="btn btn-secondary" type="button">Clear</button>
+          </div>
+          <div class="filter-options">
+            <select id="categoryFilter" class="filter-select">
+              <option value="">All Categories</option>
+              <option value="mobile">Mobile Apps</option>
+              <option value="web">Web Applications</option>
+              <option value="ecommerce">E-commerce</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="education">Education</option>
+              <option value="logistics">Logistics</option>
+            </select>
+            <select id="technologyFilter" class="filter-select">
+              <option value="">All Technologies</option>
+              <option value="react">React Native</option>
+              <option value="flutter">Flutter</option>
+              <option value="swift">Swift</option>
+              <option value="kotlin">Kotlin</option>
+              <option value="node">Node.js</option>
+              <option value="python">Python</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Projects Section -->
+    <section class="featured-projects-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Featured Projects</h2>
+          <p>Our standout work that showcases innovation and technical excellence</p>
+        </div>
+        
+        <div class="featured-grid">
+          <a href="https://restaurant-35yk.onrender.com/" target="_blank" rel="noopener noreferrer" class="featured-project">
+            <div class="project-image">
+              <img src="/image/logo-Restaurant%20Hub.png" alt="Restaurant Hub" />
+              <div class="project-overlay">
+                <div class="project-tech">
+                  <span class="tech-tag">React</span>
+                  <span class="tech-tag">Node.js</span>
+                  <span class="tech-tag">MongoDB</span>
+                </div>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-category">E-commerce & Food Delivery</div>
               <h3>Restaurant Hub - Odumase</h3>
-              <p>Food delivery platform connecting local restaurants with customers in Odumase, Ghana. Features restaurant discovery, menu browsing, and online ordering.</p>
+              <p>Comprehensive food delivery platform connecting local restaurants with customers in Odumase, Ghana. Features include restaurant discovery, menu browsing, online ordering, and real-time delivery tracking.</p>
+              <div class="project-features">
+                <span class="feature-tag">Restaurant Management</span>
+                <span class="feature-tag">Order Processing</span>
+                <span class="feature-tag">Payment Gateway</span>
+                <span class="feature-tag">Delivery Tracking</span>
+              </div>
+              <div class="project-link">
+                <span>View Project</span>
+                <div class="link-arrow">→</div>
+              </div>
             </div>
           </a>
           
-          <a href="https://uenr-fashion.onrender.com/" target="_blank" rel="noopener noreferrer" class="card project">
-            <div class="thumb" style="background-image:url('/image/fashion.avif'); background-size: cover;"></div>
-            <div class="content">
+          <a href="https://uenr-fashion.onrender.com/" target="_blank" rel="noopener noreferrer" class="featured-project">
+            <div class="project-image">
+              <img src="/image/fashion.avif" alt="Sunyani Fashion Hub" />
+              <div class="project-overlay">
+                <div class="project-tech">
+                  <span class="tech-tag">React</span>
+                  <span class="tech-tag">Express.js</span>
+                  <span class="tech-tag">PostgreSQL</span>
+                </div>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-category">Fashion & Marketplace</div>
               <h3>Sunyani Fashion Hub</h3>
-              <p>Fashion designer marketplace showcasing local talent in Sunyani. Connect with designers, book consultations, and explore custom fashion collections.</p>
+              <p>Innovative fashion designer marketplace showcasing local talent in Sunyani. Connect with designers, book consultations, and explore custom fashion collections with integrated booking and payment systems.</p>
+              <div class="project-features">
+                <span class="feature-tag">Designer Profiles</span>
+                <span class="feature-tag">Booking System</span>
+                <span class="feature-tag">Payment Integration</span>
+                <span class="feature-tag">Portfolio Showcase</span>
+              </div>
+              <div class="project-link">
+                <span>View Project</span>
+                <div class="link-arrow">→</div>
+              </div>
             </div>
           </a>
           
-          <a href="https://hostel-eao2.onrender.com/" target="_blank" rel="noopener noreferrer" class="card project">
-            <div class="thumb" style="background-image:url('/image/UENR.png'); background-size: contain; background-color: #f8fafc;"></div>
-            <div class="content">
+          <a href="https://hostel-eao2.onrender.com/" target="_blank" rel="noopener noreferrer" class="featured-project">
+            <div class="project-image">
+              <img src="/image/UENR.png" alt="UENR Student Hostel Booking" />
+              <div class="project-overlay">
+                <div class="project-tech">
+                  <span class="tech-tag">React</span>
+                  <span class="tech-tag">Node.js</span>
+                  <span class="tech-tag">MongoDB</span>
+                </div>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-category">Education & Accommodation</div>
               <h3>UENR Student Hostel Booking</h3>
-              <p>Student accommodation booking platform for University of Energy and Natural Resources. Browse hostels, compare prices, and book rooms online.</p>
+              <p>Comprehensive student accommodation booking platform for University of Energy and Natural Resources. Browse hostels, compare prices, and book rooms online with integrated payment and management systems.</p>
+              <div class="project-features">
+                <span class="feature-tag">Hostel Listings</span>
+                <span class="feature-tag">Booking Management</span>
+                <span class="feature-tag">Payment Processing</span>
+                <span class="feature-tag">Admin Dashboard</span>
+              </div>
+              <div class="project-link">
+                <span>View Project</span>
+                <div class="link-arrow">→</div>
+              </div>
             </div>
           </a>
         </div>
+      </div>
+    </section>
+
+    <!-- All Projects Section -->
+    <section class="all-projects-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>All Projects</h2>
+          <p>Explore our complete portfolio of digital solutions</p>
+        </div>
         
-        <h2 style="margin-bottom: 20px; text-align: center;">More Projects</h2>
-        <div id="projects" class="grid-3"></div>
+        <div id="projects" class="projects-grid"></div>
         <p id="projectsStatus" class="status"></p>
-        <div style="text-align:center;margin-top:18px">
-          <button id="loadMoreBtn" class="btn" style="display:none">Load more</button>
+        
+        <div class="load-more-container">
+          <button id="loadMoreBtn" class="btn btn-primary load-more-btn" style="display:none">
+            <span class="btn-text">Load More Projects</span>
+            <span class="btn-icon">📂</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Statistics Section -->
+    <section class="stats-section">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📱</div>
+            <div class="stat-number">85</div>
+            <div class="stat-label">Mobile Applications</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🌐</div>
+            <div class="stat-number">45</div>
+            <div class="stat-label">Web Applications</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🔄</div>
+            <div class="stat-number">20</div>
+            <div class="stat-label">Cross-Platform Apps</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-number">150+</div>
+            <div class="stat-label">Total Projects</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="portfolio-cta-section">
+      <div class="container">
+        <div class="cta-content">
+          <h2>Ready to Start Your Project?</h2>
+          <p>Let's discuss how we can bring your digital vision to life with our expertise and proven track record.</p>
+          <div class="cta-actions">
+            <a href="/contact.html" class="btn btn-primary">Start Your Project</a>
+            <a href="/services.html" class="btn btn-outline">View Our Services</a>
+          </div>
         </div>
       </div>
     </section>
@@ -92,16 +275,19 @@
   <script src="/js/main.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+    
     (function(){
       const list = document.getElementById('projects');
       const status = document.getElementById('projectsStatus');
       const loadMoreBtn = document.getElementById('loadMoreBtn');
       const searchInput = document.getElementById('projectSearch');
       const clearBtn = document.getElementById('clearSearch');
+      const categoryFilter = document.getElementById('categoryFilter');
+      const technologyFilter = document.getElementById('technologyFilter');
 
       let all = [];
       let page = 1;
-      const pageSize = 6;
+      const pageSize = 9;
 
       function normalizeProject(p){ return p; }
 
@@ -122,41 +308,99 @@
         const slice = items.slice((page-1)*pageSize, page*pageSize);
         slice.forEach(p => {
           const card = document.createElement('a');
-          card.className = 'card project';
+          card.className = 'project-card';
           card.href = p.link || '#';
           card.target = '_blank';
           card.rel = 'noopener noreferrer';
+          
           const preview = previewFromLink(p);
           const hasImage = preview && String(preview).trim().length > 0;
           const isFavicon = hasImage && preview.includes('www.google.com/s2/favicons');
+          
           if (isFavicon) {
             card.innerHTML = `
-              <div class="thumb icon"><img src="${preview}" alt="logo"/></div>
-              <div class="content">
+              <div class="project-thumbnail">
+                <img src="${preview}" alt="project logo" class="project-logo"/>
+                <div class="project-overlay">
+                  <div class="project-tech">
+                    <span class="tech-tag">Web App</span>
+                  </div>
+                </div>
+              </div>
+              <div class="project-info">
                 <h3>${p.title}</h3>
-                <p>${p.description || ''}</p>
+                <p>${p.description || 'A professional digital solution built with modern technologies.'}</p>
+                <div class="project-meta">
+                  <span class="project-category">Web Development</span>
+                  <div class="project-link">
+                    <span>View Project</span>
+                    <div class="link-arrow">→</div>
+                  </div>
+                </div>
               </div>
             `;
           } else {
             card.innerHTML = `
-              ${hasImage ? `<div class="thumb" style="background-image:url('${preview}')"></div>` : `<div class="thumb placeholder">🖼️</div>`}
-              <div class="content">
+              <div class="project-thumbnail">
+                ${hasImage ? `<img src="${preview}" alt="project preview" class="project-image"/>` : `<div class="project-placeholder">🖼️</div>`}
+                <div class="project-overlay">
+                  <div class="project-tech">
+                    <span class="tech-tag">Web App</span>
+                  </div>
+                </div>
+              </div>
+              <div class="project-info">
                 <h3>${p.title}</h3>
-                <p>${p.description || ''}</p>
+                <p>${p.description || 'A professional digital solution built with modern technologies.'}</p>
+                <div class="project-meta">
+                  <span class="project-category">Web Development</span>
+                  <div class="project-link">
+                    <span>View Project</span>
+                    <div class="link-arrow">→</div>
+                  </div>
+                </div>
               </div>
             `;
           }
           list.appendChild(card);
         });
+        
         const totalPages = Math.ceil(items.length / pageSize);
         loadMoreBtn.style.display = page < totalPages ? 'inline-block' : 'none';
       }
 
       function applyFilter(){
-        const q = (searchInput?.value || '').toLowerCase().trim();
-        const filtered = q ? all.filter(p => (p.title||'').toLowerCase().includes(q)) : all;
-        page = 1; render(filtered, true);
-        status.textContent = filtered.length === 0 ? 'No matching projects.' : '';
+        const searchQuery = (searchInput?.value || '').toLowerCase().trim();
+        const category = categoryFilter?.value || '';
+        const technology = technologyFilter?.value || '';
+        
+        let filtered = all;
+        
+        // Apply search filter
+        if (searchQuery) {
+          filtered = filtered.filter(p => 
+            (p.title || '').toLowerCase().includes(searchQuery) ||
+            (p.description || '').toLowerCase().includes(searchQuery)
+          );
+        }
+        
+        // Apply category filter
+        if (category) {
+          filtered = filtered.filter(p => 
+            (p.category || '').toLowerCase().includes(category)
+          );
+        }
+        
+        // Apply technology filter
+        if (technology) {
+          filtered = filtered.filter(p => 
+            (p.technologies || '').toLowerCase().includes(technology)
+          );
+        }
+        
+        page = 1; 
+        render(filtered, true);
+        status.textContent = filtered.length === 0 ? 'No matching projects found.' : '';
       }
 
       function load(){
@@ -164,17 +408,45 @@
           .then(r => r.json())
           .then(items => {
             all = (items || []).map(normalizeProject);
-            if (!all.length) { status.textContent = 'No projects available yet.'; return; }
+            if (!all.length) { 
+              status.textContent = 'No projects available yet.'; 
+              return; 
+            }
             applyFilter();
           })
           .catch(() => {
-            status.textContent = 'Failed to load projects.';
+            status.textContent = 'Failed to load projects. Please try again later.';
           });
       }
 
-      loadMoreBtn?.addEventListener('click', () => { page += 1; applyFilter(); });
-      clearBtn?.addEventListener('click', () => { if (searchInput) { searchInput.value=''; applyFilter(); } });
-      searchInput?.addEventListener('input', () => { page = 1; applyFilter(); });
+      // Event listeners
+      loadMoreBtn?.addEventListener('click', () => { 
+        page += 1; 
+        applyFilter(); 
+      });
+      
+      clearBtn?.addEventListener('click', () => { 
+        if (searchInput) { 
+          searchInput.value=''; 
+          applyFilter(); 
+        } 
+      });
+      
+      searchInput?.addEventListener('input', () => { 
+        page = 1; 
+        applyFilter(); 
+      });
+      
+      categoryFilter?.addEventListener('change', () => {
+        page = 1;
+        applyFilter();
+      });
+      
+      technologyFilter?.addEventListener('change', () => {
+        page = 1;
+        applyFilter();
+      });
+      
       load();
     })();
   </script>

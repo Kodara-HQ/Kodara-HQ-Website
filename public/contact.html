@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact | Kodara-HQ</title>
+  <title>Contact Us | Kodara-HQ</title>
   <link rel="stylesheet" href="/css/styles.css" />
   <link rel="icon" href="/image/Kodara logo1.png" type="image/png" />
   <link rel="apple-touch-icon" href="/image/Kodara logo1.png" />
@@ -32,94 +32,217 @@
   </header>
 
   <main>
-    <section class="section">
-      <div class="container narrow">
-        <h1>Get in touch</h1>
-        <p class="muted">Tell us about your project and we’ll respond within 1 business day.</p>
-        <form id="contactForm" class="form-sections">
-          <fieldset class="panel">
-            <legend>Contact information</legend>
-            <div class="form-grid">
-              <label>
-                <span>Name</span>
-                <input type="text" name="name" placeholder="Your full name" required />
-              </label>
-              <label>
-                <span>Email</span>
-                <input type="email" name="email" placeholder="you@company.com" required />
-              </label>
-              <label>
-                <span>Phone (optional)</span>
-                <input type="tel" name="phone" placeholder="+233 24 000 0000" />
-              </label>
-              <label>
-                <span>Company (optional)</span>
-                <input type="text" name="company" placeholder="Company or team" />
-              </label>
+    <!-- Hero Section -->
+    <section class="contact-hero">
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1>Let's Build Something Amazing Together</h1>
+            <p class="hero-subtitle">Ready to transform your ideas into reality? We're here to help you create innovative digital solutions that drive results.</p>
+            <div class="hero-stats">
+              <div class="stat-item">
+                <div class="stat-number">24h</div>
+                <div class="stat-label">Response Time</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Client Satisfaction</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">150+</div>
+                <div class="stat-label">Projects Delivered</div>
+              </div>
             </div>
-          </fieldset>
+          </div>
+          <div class="hero-visual">
+            <div class="contact-illustration">
+              <div class="floating-card card-1">
+                <div class="card-icon">💬</div>
+                <div class="card-text">Quick Response</div>
+              </div>
+              <div class="floating-card card-2">
+                <div class="card-icon">🚀</div>
+                <div class="card-text">Fast Delivery</div>
+              </div>
+              <div class="floating-card card-3">
+                <div class="card-icon">⭐</div>
+                <div class="card-text">Quality Assured</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-          <fieldset class="panel">
-            <legend>Project details</legend>
-            <div class="form-grid">
-              <label class="full">
-                <span>Enquiry Type</span>
-                <select name="enquiryType" id="enquiryType">
-                  <option value="General">General enquiry</option>
-                  <option value="Build">Build a product</option>
-                  <option value="Consultation">Consultation</option>
-                </select>
-              </label>
-              <label id="serviceField">
-                <span>Service</span>
-                <select name="service">
-                  <option value="Mobile App Development">Mobile App Development</option>
-                  <option value="Web Development">Web Development</option>
-                  <option value="Custom Software">Custom Software</option>
-                  <option value="Consulting">Consulting</option>
-                </select>
-              </label>
-              <label id="attachmentField" style="display:none">
-                <span>Image/Attachment (optional)</span>
-                <input type="file" name="attachment" accept="image/*,.pdf,.doc,.docx" />
-              </label>
-              <label id="budgetField">
-                <span>Budget (amount)</span>
-                <input type="number" min="0" step="0.01" name="budget" placeholder="Enter amount" />
-              </label>
-              <label id="timelineField">
-                <span>Timeline</span>
-                <select name="timeline">
-                  <option value="Flexible">Flexible</option>
-                  <option value="ASAP">ASAP</option>
-                  <option value="1–3 months">1–3 months</option>
-                  <option value="3–6 months">3–6 months</option>
-                </select>
-              </label>
-            </div>
-          </fieldset>
+    <!-- Contact Form Section -->
+    <section class="contact-form-section">
+      <div class="container">
+        <div class="form-container">
+          <div class="form-header">
+            <h2>Start Your Project</h2>
+            <p>Fill out the form below and we'll get back to you within 24 hours with a personalized proposal.</p>
+          </div>
+          
+          <form id="contactForm" class="form-sections enhanced-form">
+            <fieldset class="panel contact-info-panel">
+              <legend>
+                <div class="legend-icon">👤</div>
+                Contact Information
+              </legend>
+              <div class="form-grid">
+                <label class="form-field">
+                  <span class="field-label">Full Name *</span>
+                  <input type="text" name="name" placeholder="Enter your full name" required />
+                  <div class="field-focus-border"></div>
+                </label>
+                <label class="form-field">
+                  <span class="field-label">Email Address *</span>
+                  <input type="email" name="email" placeholder="you@company.com" required />
+                  <div class="field-focus-border"></div>
+                </label>
+                <label class="form-field">
+                  <span class="field-label">Phone Number</span>
+                  <input type="tel" name="phone" placeholder="+233 24 000 0000" />
+                  <div class="field-focus-border"></div>
+                </label>
+                <label class="form-field">
+                  <span class="field-label">Company/Organization</span>
+                  <input type="text" name="company" placeholder="Your company or team name" />
+                  <div class="field-focus-border"></div>
+                </label>
+              </div>
+            </fieldset>
 
-          <fieldset class="panel">
-            <legend>Message</legend>
-            <label class="full">
-              <span>Message</span>
-              <textarea name="message" rows="7" placeholder="Share goals, key features, or links…" required></textarea>
-              <small class="hint">Include any deadlines, existing links, or file shares if helpful.</small>
-            </label>
-          </fieldset>
+            <fieldset class="panel project-details-panel">
+              <legend>
+                <div class="legend-icon">🎯</div>
+                Project Details
+              </legend>
+              <div class="form-grid">
+                <label class="form-field full">
+                  <span class="field-label">Enquiry Type *</span>
+                  <select name="enquiryType" id="enquiryType" class="enhanced-select">
+                    <option value="">Select enquiry type</option>
+                    <option value="General">General enquiry</option>
+                    <option value="Build">Build a product</option>
+                    <option value="Consultation">Consultation</option>
+                  </select>
+                  <div class="select-arrow">▼</div>
+                </label>
+                <label class="form-field" id="serviceField">
+                  <span class="field-label">Service Required</span>
+                  <select name="service" class="enhanced-select">
+                    <option value="">Select service</option>
+                    <option value="Mobile App Development">Mobile App Development</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Custom Software">Custom Software</option>
+                    <option value="Consulting">Consulting</option>
+                  </select>
+                  <div class="select-arrow">▼</div>
+                </label>
+                <label class="form-field" id="budgetField">
+                  <span class="field-label">Budget Range</span>
+                  <select name="budget" class="enhanced-select">
+                    <option value="">Select budget range</option>
+                    <option value="Under $5,000">Under $5,000</option>
+                    <option value="$5,000 - $15,000">$5,000 - $15,000</option>
+                    <option value="$15,000 - $50,000">$15,000 - $50,000</option>
+                    <option value="$50,000+">$50,000+</option>
+                    <option value="Custom">Custom</option>
+                  </select>
+                  <div class="select-arrow">▼</div>
+                </label>
+                <label class="form-field" id="timelineField">
+                  <span class="field-label">Project Timeline</span>
+                  <select name="timeline" class="enhanced-select">
+                    <option value="">Select timeline</option>
+                    <option value="ASAP">ASAP</option>
+                    <option value="1–3 months">1–3 months</option>
+                    <option value="3–6 months">3–6 months</option>
+                    <option value="6+ months">6+ months</option>
+                    <option value="Flexible">Flexible</option>
+                  </select>
+                  <div class="select-arrow">▼</div>
+                </label>
+                <label class="form-field full" id="attachmentField" style="display:none">
+                  <span class="field-label">Project Files (Optional)</span>
+                  <div class="file-upload-area">
+                    <input type="file" name="attachment" accept="image/*,.pdf,.doc,.docx" id="fileInput" />
+                    <div class="upload-placeholder">
+                      <div class="upload-icon">📎</div>
+                      <div class="upload-text">
+                        <span class="upload-title">Drop files here or click to browse</span>
+                        <span class="upload-hint">Supports: Images, PDF, Word docs (Max 10MB)</span>
+                      </div>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </fieldset>
 
-          <fieldset class="panel">
-            <legend>Submit</legend>
-            <div class="full consent-row">
-              <input id="agree" type="checkbox" required />
-              <label for="agree" style="margin:0">I agree to be contacted about this inquiry.</label>
-            </div>
-            <div class="full form-actions">
-              <button type="submit" class="btn">Send</button>
-            </div>
-          </fieldset>
-        </form>
-        <p id="contactStatus" class="status" style="display:none"></p>
+            <fieldset class="panel message-panel">
+              <legend>
+                <div class="legend-icon">💭</div>
+                Project Description
+              </legend>
+              <label class="form-field full">
+                <span class="field-label">Tell Us About Your Project *</span>
+                <textarea name="message" rows="6" placeholder="Describe your project goals, key features, target audience, and any specific requirements..." required></textarea>
+                <div class="field-focus-border"></div>
+                <small class="field-hint">Include any deadlines, existing links, or file shares if helpful. The more details you provide, the better we can serve you.</small>
+              </label>
+            </fieldset>
+
+            <fieldset class="panel submit-panel">
+              <legend>
+                <div class="legend-icon">✅</div>
+                Submit Project
+              </legend>
+              <div class="consent-section">
+                <label class="consent-checkbox">
+                  <input id="agree" type="checkbox" required />
+                  <span class="checkmark"></span>
+                  <span class="consent-text">I agree to be contacted about this inquiry and understand that my information will be used to provide project-related services.</span>
+                </label>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary submit-btn">
+                  <span class="btn-text">Send Project Request</span>
+                  <span class="btn-icon">🚀</span>
+                </button>
+                <button type="button" class="btn btn-outline clear-btn">Clear Form</button>
+              </div>
+            </fieldset>
+          </form>
+          
+          <div id="contactStatus" class="status-message" style="display:none"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Methods Section -->
+    <section class="contact-methods-section">
+      <div class="container">
+        <div class="methods-grid">
+          <div class="method-card">
+            <div class="method-icon">📧</div>
+            <h3>Email Us</h3>
+            <p>Send us a detailed message and we'll respond within 24 hours</p>
+            <a href="mailto:info@kodara-hq.com" class="method-link">info@kodara-hq.com</a>
+          </div>
+          <div class="method-card">
+            <div class="method-icon">📱</div>
+            <h3>Call Us</h3>
+            <p>Prefer to talk? Give us a call during business hours</p>
+            <a href="tel:+233240000000" class="method-link">+233 24 000 0000</a>
+          </div>
+          <div class="method-card">
+            <div class="method-icon">💼</div>
+            <h3>Schedule a Meeting</h3>
+            <p>Book a free consultation to discuss your project in detail</p>
+            <a href="/intake.html" class="method-link">Book Consultation</a>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -140,6 +263,60 @@
   </div>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+    
+    // Enhanced form functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const contactForm = document.getElementById('contactForm');
+      const clearBtn = document.querySelector('.clear-btn');
+      const fileInput = document.getElementById('fileInput');
+      const uploadPlaceholder = document.querySelector('.upload-placeholder');
+      
+      // Clear form functionality
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+          if (confirm('Are you sure you want to clear all form data?')) {
+            contactForm.reset();
+            // Reset file upload area
+            if (uploadPlaceholder) {
+              uploadPlaceholder.style.display = 'flex';
+            }
+          }
+        });
+      }
+      
+      // File upload enhancement
+      if (fileInput && uploadPlaceholder) {
+        fileInput.addEventListener('change', function() {
+          if (this.files.length > 0) {
+            const fileName = this.files[0].name;
+            uploadPlaceholder.innerHTML = `
+              <div class="upload-icon">📎</div>
+              <div class="upload-text">
+                <span class="upload-title">${fileName}</span>
+                <span class="upload-hint">Click to change file</span>
+              </div>
+            `;
+          }
+        });
+        
+        // Click to browse functionality
+        uploadPlaceholder.addEventListener('click', function() {
+          fileInput.click();
+        });
+      }
+      
+      // Enhanced select styling
+      const enhancedSelects = document.querySelectorAll('.enhanced-select');
+      enhancedSelects.forEach(select => {
+        select.addEventListener('change', function() {
+          if (this.value) {
+            this.classList.add('has-value');
+          } else {
+            this.classList.remove('has-value');
+          }
+        });
+      });
+    });
   </script>
   
   <!-- Mobile menu functionality -->
